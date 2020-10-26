@@ -1,4 +1,6 @@
-
 ul li{
     display: inline;
+}
+body{
+    background-color: gray;
 }

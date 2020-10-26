@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 app_name = 'main'
@@ -13,6 +12,7 @@ urlpatterns = [
     path('registration/', RegisterUserView.as_view(), name='registration_url'),
     path('register/done/', RegisterUserDoneView.as_view(), name='registration_done_url'),
     path('registration/activate/<str:sign>/', user_activate, name='registration_activate_url'),
+
 
 ]
 

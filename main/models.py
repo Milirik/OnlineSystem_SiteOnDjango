@@ -30,7 +30,3 @@ class Teacher(Student):
         verbose_name = 'Учитель'
         verbose_name_plural = 'Учителя'
 
-
-# Tasks
-class Task(models.Model):
-    title = models.CharField(max_length=100)

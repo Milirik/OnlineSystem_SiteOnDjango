@@ -11,6 +11,8 @@
     <header>
         <ul>
             <li><a href="{% url 'main:index_url' %}">Главная</a></li>
+            <li><a href="{% url 'testing_system:index_url' %}">Посмотреть все задания</a></li>
+
             {% if user.is_authenticated %}
 		 	    <li>{{ user.username }}<a href="{% url 'main:logout_url' %}">(Выйти)</a></li>
 	    	{% else %}
