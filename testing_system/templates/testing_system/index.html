@@ -9,9 +9,9 @@
     <hr>
     {% for task in tasks %}
         <div>
-            <p>{{ task.title }} {{ task.date_publish }}</p>
-            <p>Тесты: {{ task.task_text }}</p>
-            <p>{{ task.tests }}</p>
+            <p><a href="{{ task.get_absolute_url }}">{{ task.title }}</a>  <i>{{ task.date_publish }}</i></p>
+            <p>{{ task.task_text }}</p>
+            <p>Тесты: {{ task.tests }}</p>
         </div>
          <hr>
     {% endfor %}
