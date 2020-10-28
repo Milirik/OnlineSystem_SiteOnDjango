@@ -1,0 +1,15 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+    Authorization
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Войти">
+    </form>
+    <p><a href="{% url 'main:registration_url' %}">Регистрация</a></p>
+{% endblock %}
+
