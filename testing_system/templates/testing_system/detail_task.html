@@ -12,21 +12,23 @@
     <p>{{ task.tests }}</p>
     <hr>
     <h2 style="text-align: center;">Форма отправки</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div style="display: flex; flex-direction: row; justify-content: space-around;">
             <div>
-                <p>{{ ans.file }}</p>
+                <p>{{ form.file }}</p>
                  <input type="submit" value="Отправить">
             </div>
             <div>
                 <h3>OR</h3>
             </div>
             <div>
-                <p>{{ ans.code_text }}</p>
+                <p>{{ form.code_text }}</p>
                  <input type="submit" value="Отправить">
             </div>
 
         </div>
+        <input type="hidden" name="task" value="{{ task.pk }}">
+        <input type="hidden" name="student" value="{{ user.pk }}">
     </form>
 {% endblock %}
