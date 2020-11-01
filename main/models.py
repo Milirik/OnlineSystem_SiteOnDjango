@@ -19,6 +19,9 @@ class Student(AbstractUser):
     """Model for new people and students"""
     is_activated = models.BooleanField(default=True, db_index=True, verbose_name='Прошел активацию?')
 
+    def __str__(self):
+        return f'{self.username}'
+
     class Meta(AbstractUser.Meta):
         verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
@@ -26,6 +29,7 @@ class Student(AbstractUser):
 
 class Teacher(Student):
     """Model for teachers who will create tasks"""
+
     class Meta:
         verbose_name = 'Учитель'
         verbose_name_plural = 'Учителя'

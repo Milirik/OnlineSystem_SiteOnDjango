@@ -1,6 +1,11 @@
-ul li{
-    display: inline;
+q{
+    quotes: "\00ab" "\00bb";
 }
-body{
-    background-color: gray;
+
+a{
+    color: #F4976C;
+    text-decoration: none;
+}
+a:hover{
+    color: black;
 }

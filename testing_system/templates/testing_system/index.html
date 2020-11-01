@@ -4,17 +4,14 @@
     Main page
 {% endblock %}
 
+{% block sidebar %}
+    <li class="list-group-item"><a href="{% url 'main:index_url' %}">Сортировка(не работает)</a></li>
+{% endblock %}
+
 {% block content %}
-    <dev>Testing system</dev>
+    <h1>Все задания</h1>
     <hr>
-    {% for task in tasks %}
-        <div>
-            <p><a href="{{ task.get_absolute_url }}">{{ task.title }}</a>  <i>{{ task.date_publish }}</i></p>
-            <p>{{ task.task_text }}</p>
-            <p>Тесты: {{ task.tests }}</p>
-        </div>
-         <hr>
-    {% endfor %}
+    {% include 'includes/task_crads.html' %}
     
 
 {% endblock %}

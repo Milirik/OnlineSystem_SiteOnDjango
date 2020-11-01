@@ -4,31 +4,62 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Задание № {{ task.pk }} <i>{{ task.date_publish }}</i></h2>
-    <h3>{{ task.title }}</h3>
+
+    <h1>{{ task.title }}</h1>
+    <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} @{{ task.teacher.username }}</p>
+    <p>Создано: <span class="text-muted">{{ task.date_publish }}</span></p>
+    <hr>
+    <h3>Текст задания</h3>
     <p>{{ task.task_text }}</p>
     <hr>
-    <h2>Тесты:</h2>
+    <h3>Тесты:</h3>
     <p>{{ task.tests }}</p>
     <hr>
-    <h2 style="text-align: center;">Форма отправки</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div style="display: flex; flex-direction: row; justify-content: space-around;">
-            <div>
-                <p>{{ form.file }}</p>
-                 <input type="submit" value="Отправить">
-            </div>
-            <div>
-                <h3>OR</h3>
-            </div>
-            <div>
-                <p>{{ form.code_text }}</p>
-                 <input type="submit" value="Отправить">
+    {% if user.is_authenticated %}
+    <h3>Выберите форму отправки</h3>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center">
+                <div>
+                    <p>{{ form.code_text }}</p>
+                    <input type="submit" value="Отправить">
+                </div>
+
+                <div>
+                    <h4>OR</h4>
+                </div>
+                <div>
+                    <p>{{ form.file }}</p>
+                    <input type="submit" value="Отправить">
+                </div>
+
             </div>
 
-        </div>
-        <input type="hidden" name="task" value="{{ task.pk }}">
-        <input type="hidden" name="student" value="{{ user.pk }}">
-    </form>
+            <input type="hidden" name="task" value="{{ task.pk }}">
+            <input type="hidden" name="student" value="{{ user.pk }}">
+        </form>
+
+
+    {% else %}
+        <p>Чтобы отправить свое рещшение Вам нужно авторизоваться
+        <a href="{% url 'main:login_url' %}">Войти/зарегестрироваться</a>
+        </p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <hr>
+        <h1>Отправленные ответы</h1>
+        {% if user.studentcodemodel_set.all %}
+            {% for answer in user.studentcodemodel_set.all %}
+                <p>- {{ answer.student.username }} {{ answer.file }}</p>
+            {% endfor %}
+            {% else %}
+            <p>Пока нет отправленных ответов</p>
+        {% endif %}
+
+    {% endif %} 
+
+    
 {% endblock %}

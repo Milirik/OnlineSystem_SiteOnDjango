@@ -7,7 +7,7 @@ from main.models import Teacher, Student
 def user_directory_path(instance, filename):
     """Создает путь к папке ответа ученика"""
     # print(dir(instance))
-    return f'answers/{instance.student.username}_{instance.task.title[:10]}'
+    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/{filename}'
 
 
 # Testing system

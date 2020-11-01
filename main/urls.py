@@ -13,6 +13,6 @@ urlpatterns = [
     path('register/done/', RegisterUserDoneView.as_view(), name='registration_done_url'),
     path('registration/activate/<str:sign>/', user_activate, name='registration_activate_url'),
 
-
+    path('profile/', profile, name='profile_url')
 ]
 

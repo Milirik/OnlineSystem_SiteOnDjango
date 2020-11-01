@@ -22,7 +22,6 @@ class DetailTask(FormView):
     form_class = StudentCodeModelForm
     # initial = {'student': request.user.pk, 'task': task}
     template_name = 'testing_system/detail_task.html'
-    success_url = reverse_lazy('testing_system:index_url')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -30,5 +29,10 @@ class DetailTask(FormView):
         return data
 
     def form_valid(self, form):
+        # if user.is_authenticated(): - Сделать проверку на авторизацию
+
         form.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('testing_system:detail_url', kwargs={'pk': self.kwargs['pk']})
