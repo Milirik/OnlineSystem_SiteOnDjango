@@ -6,7 +6,7 @@
 {% block content %}
 
     <h1>{{ task.title }}</h1>
-    <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} @{{ task.teacher.username }}</p>
+    <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} <span style="color: #A01D26;"> @{{ task.teacher.username }} </span></p>
     <p>Создано: <span class="text-muted">{{ task.date_publish }}</span></p>
     <hr>
     <h3>Текст задания</h3>
@@ -51,10 +51,31 @@
     {% if user.is_authenticated %}
         <hr>
         <h1>Отправленные ответы</h1>
-        {% if user.studentcodemodel_set.all %}
-            {% for answer in user.studentcodemodel_set.all %}
-                <p>- {{ answer.student.username }} {{ answer.file }}</p>
-            {% endfor %}
+        {% if answers %}
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название файла</th>
+                    <th scope="col">Время отправки</th>
+                    <th scope="col">Итог</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for answer in answers %}
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>{{ answer.file }}</td>
+                        <td>{{ answer.dispatch_time }}</td>
+                        <td>{{ None }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
             {% else %}
             <p>Пока нет отправленных ответов</p>
         {% endif %}

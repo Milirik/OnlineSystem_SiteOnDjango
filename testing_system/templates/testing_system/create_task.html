@@ -1,0 +1,34 @@
+{% extends 'layout/basic.html' %}
+{% block title %}
+    Detail task № {{ task.pk }}
+{% endblock %}
+
+{% block content %}
+    <h1>Создание нового задания</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+{#        <label for="validationCustom03">{{ form.title.help_text }}</label>#}
+{#        <input type="text" class="form-control" id="validationCustom03" placeholder="Задание № 0" required>#}
+{#        <br>#}
+{#        <label for="exampleFormControlTextarea1">{{ form.task_text.help_text }}</label>#}
+{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
+{#        <br>#}
+{#        <label for="exampleFormControlTextarea1">{{ form.tests.help_text }}</label>#}
+{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
+{#        <br>#}
+{#        <label for="exampleFormControlTextarea1">{{ form.required_form.help_text }}</label>#}
+{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
+{#        <br>#}
+{##}
+
+{#        <input type="hidden" name="teacher" value="{{ user.pk }}">#}
+        {{ form.as_p }}
+        <input type="submit" value="Создать">
+        <br>
+        <br>
+    </form>
+
+
+{% endblock %}

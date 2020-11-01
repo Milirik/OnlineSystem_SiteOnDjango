@@ -10,7 +10,7 @@
     </title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-md navbar-light" style="background-color: #FBE8A6;">
+    <nav class="navbar navbar-expand-md navbar-light">
         <a class="navbar-brand" href="{% url 'main:index_url' %}">JavaTest</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,11 @@
             </ul>
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <a class="nav-link active" href="{% url 'main:profile_url' %}">{{ user.username }}</a>
+                    <a class="nav-link active" href="{% url 'main:profile_url' %}">{{ user.username }}
+                        {% if user.teacher %}
+                            <span style="color: red">Teacher</span>
+                        {% endif %}
+                    </a>
 
 
                         <div class="btn-group">
@@ -62,8 +66,6 @@
                     <ul class="list-group">
                         <li class="list-group-item"><a href="{% url 'main:index_url' %}">Главная</a></li>
                         <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Задания</a></li>
-                        <li class="list-group-item"><a href="{% url 'main:index_url' %}">Топ популярных(не работает)</a></li>
-                        <li class="list-group-item"><a href="{% url 'main:index_url' %}">Учителя(не работает)</a></li>
 
                         {% block sidebar %}
 

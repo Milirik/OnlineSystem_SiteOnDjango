@@ -13,13 +13,17 @@ def user_directory_path(instance, filename):
 # Testing system
 class Task(models.Model):
     """The task that the teacher created"""
-    title = models.CharField(max_length=100, verbose_name='Название задания')
-    task_text = models.TextField(max_length=1000, db_index=True, verbose_name='Описание самого задания')
+    title = models.CharField(max_length=100, verbose_name='Название задания',
+                             help_text='Название задания')
+    task_text = models.TextField(max_length=1000, db_index=True, verbose_name='Описание самого задания',
+                                 help_text='Текст задания')
     date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания задания')
 
     # Приблизительный формат ввода данных, в будущем возможно нужно будет заменить на отдельные модели
-    tests = models.TextField(max_length=1000, db_index=True, verbose_name='Тесты')
-    required_form = models.TextField(max_length=1000, db_index=True, verbose_name='Шаблон класса, который задал учител')
+    tests = models.TextField(max_length=1000, db_index=True, verbose_name='Тесты',
+                             help_text='Тесты')
+    required_form = models.TextField(max_length=1000, db_index=True, verbose_name='Шаблон класса, который задал учител',
+                                     help_text='Шаблон формы учителя')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name='Учитель, который приудмал это задание')
 
     def get_absolute_url(self):
@@ -39,6 +43,8 @@ class StudentCodeModel(models.Model):
     code_text = models.TextField(max_length=1000, blank=True, db_index=True, verbose_name='Решение ученика ввиде кода')
     student = models.ForeignKey(Student, null=True, on_delete=models.CASCADE, verbose_name='Ученик')
     task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, verbose_name='Задание на которое был отправлен ответ')
+
+    dispatch_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата отправки ответа')
 
     def __str__(self):
         return f"Solve {self.task.teacher.username}'s '{self.task.title}' task by {self.student.username}"

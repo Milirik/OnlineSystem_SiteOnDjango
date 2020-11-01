@@ -1,11 +1,23 @@
+body{
+    background-color: #F4F4EF;
+}
+
 q{
     quotes: "\00ab" "\00bb";
 }
 
 a{
-    color: #F4976C;
+    color: #A01D26;
     text-decoration: none;
+    transition: all .2s;
 }
+
 a:hover{
-    color: black;
+    color: #20232A;
+    background-size: 100% 2px;
 }
+
+nav{
+    background-color: #ACBEBE;
+}
+

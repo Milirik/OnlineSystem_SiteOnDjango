@@ -1,0 +1,19 @@
+{% for task in tasks %}
+    <div class="card">
+        <h5 class="card-header">
+            <a class="" href="{{ task.get_absolute_url }}"><q>{{ task.title }}</q></a>
+
+            <span class="text-muted"> by {{ task.teacher.first_name }}</span>
+            <span class="text-muted"> {{ task.teacher.last_name }}</span>
+            <span style="color: #A01D26;"> @{{ task.teacher.username }}</span>
+        </h5>
+        <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">{{ task.task_text }}</p>
+        </div>
+        <div class="card-footer text-muted">
+            {{ task.date_publish }}
+        </div>
+    </div>
+    <br>
+{% endfor %}
