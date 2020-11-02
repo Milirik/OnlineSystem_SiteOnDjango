@@ -1,13 +1,16 @@
+from datetime import datetime
+from os.path import splitext
 from django.db import models
 from django.urls import reverse
+import os
 
 from main.models import Teacher, Student
 
 
 def user_directory_path(instance, filename):
     """Создает путь к папке ответа ученика"""
-    # print(dir(instance))
-    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/{filename}'
+    # Костыль с определением типа файла
+    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/student_answer_{datetime.now().timestamp()}.{filename.split(".")[-1]}'
 
 
 # Testing system
@@ -35,6 +38,7 @@ class Task(models.Model):
     class Meta:
         verbose_name = "Задание"
         verbose_name_plural = "Задания"
+        ordering = ['-date_publish']
 
 
 class StudentCodeModel(models.Model):
@@ -45,6 +49,20 @@ class StudentCodeModel(models.Model):
     task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, verbose_name='Задание на которое был отправлен ответ')
 
     dispatch_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата отправки ответа')
+
+    def save(self, *args, **kwargs):
+        if self.code_text != '' and not self.file:
+            try:
+                os.mkdir(f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}')
+            except OSError:
+                pass
+
+            path = f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
+            with open(path, 'w') as f:
+                f.write(self.code_text)
+            self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
+            print(self.file)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Solve {self.task.teacher.username}'s '{self.task.title}' task by {self.student.username}"

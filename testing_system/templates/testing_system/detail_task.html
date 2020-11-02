@@ -4,8 +4,11 @@
 {% endblock %}
 
 {% block content %}
+    <script>
+        var answers = {{ answers|safe }};
+    </script>
 
-    <h1>{{ task.title }}</h1>
+    <h3>{{ task.title }}</h3>
     <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} <span style="color: #A01D26;"> @{{ task.teacher.username }} </span></p>
     <p>Создано: <span class="text-muted">{{ task.date_publish }}</span></p>
     <hr>
@@ -50,7 +53,7 @@
 
     {% if user.is_authenticated %}
         <hr>
-        <h1>Отправленные ответы</h1>
+        <h3>Отправленные ответы</h3>
         {% if answers %}
 
             <table class="table">
@@ -60,27 +63,39 @@
                     <th scope="col">Название файла</th>
                     <th scope="col">Время отправки</th>
                     <th scope="col">Итог</th>
-
                 </tr>
                 </thead>
-                <tbody>
-                {% for answer in answers %}
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>{{ answer.file }}</td>
-                        <td>{{ answer.dispatch_time }}</td>
-                        <td>{{ None }}</td>
-                    </tr>
-                {% endfor %}
+                <tbody id="counter">
+                     <template v-for="(answer, index) in answers">
+                         <tr>
+                            <th scope="row">[[ index+1 ]]</th>
+                            <td>[[ answer.file ]]</td>
+                            <td>[[ answer.dispatch_time ]]</td>
+                            <td>[[ None ]]</td>
+                         </tr>
+                     </template>
                 </tbody>
             </table>
-
 
             {% else %}
             <p>Пока нет отправленных ответов</p>
         {% endif %}
 
-    {% endif %} 
+    {% endif %}
 
-    
+    <script type="text/javascript">
+        var app = new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#counter',
+                data: {
+                    answers: answers,
+                },
+                methods: {
+                    count() {
+                        this.k++;
+                    },
+                }
+            }
+        );
+    </script>
 {% endblock %}
