@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import inlineformset_factory
 
-from .models import StudentCodeModel, Task
+from .models import StudentCodeModel, Task, Test
 
 
 class StudentCodeModelForm(forms.ModelForm):
@@ -21,3 +22,12 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = '__all__'
+
+
+class TestForm(forms.ModelForm):
+    class Meta:
+        model = Test
+        exclude = ()
+
+
+TestFormSet = inlineformset_factory(Task, Test, TestForm, extra=3)

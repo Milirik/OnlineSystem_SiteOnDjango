@@ -2,8 +2,7 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
-
-from .models import Student,  user_registration
+from .models import Student, user_registration
 
 
 class RegisterStudentForm(forms.ModelForm):

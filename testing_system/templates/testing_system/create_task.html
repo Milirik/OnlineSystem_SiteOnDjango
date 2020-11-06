@@ -8,24 +8,57 @@
 
     <form method="post">
         {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li><em>{{ error|escape }}</em></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-{#        <label for="validationCustom03">{{ form.title.help_text }}</label>#}
-{#        <input type="text" class="form-control" id="validationCustom03" placeholder="Задание № 0" required>#}
-{#        <br>#}
-{#        <label for="exampleFormControlTextarea1">{{ form.task_text.help_text }}</label>#}
-{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
-{#        <br>#}
-{#        <label for="exampleFormControlTextarea1">{{ form.tests.help_text }}</label>#}
-{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
-{#        <br>#}
-{#        <label for="exampleFormControlTextarea1">{{ form.required_form.help_text }}</label>#}
-{#        <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>#}
-{#        <br>#}
-{##}
 
-{#        <input type="hidden" name="teacher" value="{{ user.pk }}">#}
-        {{ form.as_p }}
-        <input type="submit" value="Создать">
+        <p>
+            {{ form.title.label_tag }}
+            <br>
+            {{ form.title }}
+        </p>
+         <p>
+            {{ form.task_text.label_tag }}
+            <br>
+            {{ form.task_text }}
+        </p>
+        <p>Тесты:</p>
+        <hr>
+        {{ tests_formset.management_form }}
+        {% for test in tests_formset %}
+            {% for field in test.visible_fields %}
+                {% if field.errors %}
+                    <ul>
+                        {% for error in field.errors %}
+                            <li><em>{{ error|escape }}</em></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p>
+                    {{ field.label_tag }}
+                    {{ field }}
+                </p>
+            {% endfor %}
+            <hr>
+        {% endfor %}
+
+
+         <p>
+            {{ form.required_form.label_tag }}
+            <br>
+            {{ form.required_form }}
+        </p>
+        <input type="hidden" name="teacher" value="{{ user.pk }}">
+
+        <p><input type="submit" value="Создать"></p>
         <br>
         <br>
     </form>
