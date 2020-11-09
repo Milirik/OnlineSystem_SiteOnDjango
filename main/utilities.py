@@ -1,4 +1,3 @@
-
 from django.template.loader import render_to_string
 from django.core.signing import Signer
 from OnlineSystem_SiteOnDjango.settings import ALLOWED_HOSTS

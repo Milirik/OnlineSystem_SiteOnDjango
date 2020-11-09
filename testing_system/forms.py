@@ -8,7 +8,6 @@ from .models import StudentCodeModel, Task, Test
 class StudentCodeModelForm(forms.ModelForm):
     def clean(self):
         super().clean()
-        print(self.cleaned_data['file'])
         if self.cleaned_data['code_text'] == '' and not self.cleaned_data['file']:
             print('err')
             raise ValidationError('Оба поля пусты')
