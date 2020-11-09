@@ -1,11 +1,13 @@
 import json
+import pika
 from datetime import datetime
-from os.path import splitext
 from pathlib import Path
+import os
 
 from django.db import models
+from django.dispatch import receiver
 from django.urls import reverse
-import os
+from django.db.models.signals import post_save
 
 from main.models import Teacher, Student
 
@@ -45,7 +47,6 @@ class Task(models.Model):
         with open(f'documents/tests/{"_".join(self.title.split())}/tests.json', 'w') as f:
             json.dump({}, f)
 
-
         with open(f'documents/required_forms/{"_".join(self.title.split())}/required_form.java', 'w') as f1:
             f1.write(self.required_form)
 
@@ -77,7 +78,6 @@ class StudentCodeModel(models.Model):
             except OSError:
                 pass
 
-            # Поправить костыль с именем path
             with open(path, 'w') as f:
                 f.write(self.code_text)
             self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
@@ -99,10 +99,6 @@ class Test(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # with open(path, 'a') as f:
-        #     json.dump(data, f)
-        #     f.write('\n')
-
         path = Path(f'documents/tests/{"_".join(self.task.title.split())}/tests.json')
         with open(path) as f:
             data = json.load(f)
@@ -116,3 +112,38 @@ class Test(models.Model):
     class Meta:
         verbose_name = 'Тест'
         verbose_name_plural = 'Тесты'
+
+
+@receiver(post_save, sender=StudentCodeModel)
+def answer_saved(sender, instance, **kwargs):
+    path_main = f'paths/{instance.student.username}_{"_".join(instance.task.title.split())}_{datetime.now().timestamp()}'
+    path_rf = f'OnlineSystem_SiteOnDjango/documents/required_forms/{"_".join(instance.task.title.split())}/required_form.java'
+    path_t = f'OnlineSystem_SiteOnDjango/documents/tests/{"_".join(instance.task.title.split())}/tests.json'
+    try:
+        os.mkdir(path_main)
+    except OSError:
+        pass
+
+    with open(f'{path_main}/paths.json', 'w') as f:
+        json.dump(
+            {
+                'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
+                'required_form': f'{path_rf}',
+                'tests': f'{path_t}',
+            },
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
+
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost')
+    )
+    channel = connection.channel()
+    channel.queue_declare(queue='site_messages')
+    channel.basic_publish(exchange='',
+                          routing_key='site_messages',
+                          body=f'OnlineSystem_SiteOnDjango/{path_main}',
+                          )
+    print(' [x] Sent path.')
+    connection.close()
