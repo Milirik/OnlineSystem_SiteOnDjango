@@ -1,0 +1,66 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+    Профиль пользователя
+{% endblock %}
+
+
+{% block sidebar %}
+    {% if user.teacher  %}
+        <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Созданные задачи(не работает)</a></li>
+        <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_url' %}">Создать задачу</a></li>
+     {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <h2>Профиль пользователя {{ user.username }}
+    {% if user.teacher %}
+        <span style="color: red">Teacher</span>
+    {% endif %}
+    </h2>
+    <div class="row">
+        <div class="col-lg-4">
+            {% if user.image %}
+                <img class="profile_photo" src="{{ user.image.url }}">
+            {% endif %}
+        </div>
+        <div class="col-lg-8">
+            <p>Имя профиля: {{ user.username }}</p>
+            <p>Ваше имя:
+                {% if user.first_name and user.last_name %}
+                    {{ user.first_name }} {{ user.last_name }}
+                {% else %}
+                    <b style="color:red;">Не указано</b>
+                {% endif %}
+
+            </p>
+            <p>Email: {{ user.email }}</p>
+            <p>Дата регистрации: {{ user.date_joined }}</p>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Настройка
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="">Изменить данные(не работает)</a>
+                    <a class="dropdown-item" href="">Изменить пароль(не работает)</a>
+                    <a class="dropdown-item" href="">Удалить аккаунт(не работает)</a>
+                    <!-- <div class="dropdown-divider"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% if user.teacher %}
+        <h3>Созданные задачи:</h3>
+        {% if tasks %}
+            {% include 'includes/task_crads.html' %}
+        {% else %}
+            <p style="color: red">Вы пока не создали ни одного задания</p>
+        {% endif %}
+
+
+    {% endif %}
+{% endblock %}
+

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.signing import BadSignature
@@ -5,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
+from testing_system.models import Task
 from .models import Student
 from .forms import RegisterStudentForm
 from .utilities import signer
@@ -20,12 +22,19 @@ def index(request):
 class LoginView(LoginView):
     """Login"""
     template_name = 'auth/login.html'
-    success_url = reverse_lazy('main:index_url')
+    success_url = reverse_lazy('main:profile_url')
 
 
 class LogoutView(LoginRequiredMixin, LogoutView):
     """Logout"""
     success_url = reverse_lazy('main:index_url')
+
+
+@login_required
+def profile(request):
+    """Профиль пользователя"""
+    tasks = Task.objects.filter(teacher=request.user)
+    return render(request, 'main/profile.html', context={'tasks': tasks})
 
 
 class RegisterUserView(CreateView):

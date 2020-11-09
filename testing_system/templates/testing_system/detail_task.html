@@ -1,0 +1,98 @@
+{% extends 'layout/basic.html' %}
+{% block title %}
+    Detail task № {{ task.pk }}
+{% endblock %}
+
+{% block content %}
+    <script>
+        var answers = {{ answers|safe }};
+    </script>
+
+    <h3>{{ task.title }}</h3>
+    <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} <span style="color: #A01D26;"> @{{ task.teacher.username }} </span></p>
+    <p>Создано: <span class="text-muted">{{ task.date_publish }}</span></p>
+    <hr>
+    <h3>Текст задания</h3>
+    <p>{{ task.task_text }}</p>
+    <hr>
+    {% if user.is_authenticated %}
+    <h3>Выберите форму отправки</h3>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center">
+                <div>
+                    <p>{{ form.code_text }}</p>
+                    <input type="submit" value="Отправить">
+                </div>
+
+                <div>
+                    <h4>OR</h4>
+                </div>
+                <div>
+                    <p>{{ form.file }}</p>
+                    <input type="submit" value="Отправить">
+                </div>
+
+            </div>
+
+            <input type="hidden" name="task" value="{{ task.pk }}">
+            <input type="hidden" name="student" value="{{ user.pk }}">
+        </form>
+
+
+    {% else %}
+        <p>Чтобы отправить свое рещшение Вам нужно авторизоваться
+        <a href="{% url 'main:login_url' %}">Войти/зарегестрироваться</a>
+        </p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <hr>
+        <h3>Отправленные ответы</h3>
+        {% if answers %}
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название файла</th>
+                    <th scope="col">Время отправки</th>
+                    <th scope="col">Итог</th>
+                </tr>
+                </thead>
+                <tbody id="counter">
+                     <template v-for="(answer, index) in answers">
+                         <tr>
+                            <th scope="row">[[ index+1 ]]</th>
+                            <td>[[ answer.file ]]</td>
+                            <td>[[ answer.dispatch_time ]]</td>
+                            <td>[[ None ]]</td>
+                         </tr>
+                     </template>
+                </tbody>
+            </table>
+
+            {% else %}
+            <p>Пока нет отправленных ответов</p>
+        {% endif %}
+
+    {% endif %}
+
+    <script type="text/javascript">
+        var app = new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#counter',
+                data: {
+                    answers: answers,
+                },
+                methods: {
+                    count() {
+                        this.k++;
+                    },
+                }
+            }
+        );
+    </script>
+{% endblock %}

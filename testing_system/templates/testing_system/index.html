@@ -1,0 +1,17 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+    Main page
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a href="{% url 'main:index_url' %}">Сортировка(не работает)</a></li>
+{% endblock %}
+
+{% block content %}
+    <h1>Все задания</h1>
+    <hr>
+    {% include 'includes/task_crads.html' %}
+    
+
+{% endblock %}
