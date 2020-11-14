@@ -25,6 +25,7 @@ def index(request):
 
 # Задания
 class DetailTask(FormView):
+    """ Описывает задание и отправляет ответ """
     form_class = StudentCodeModelForm
     template_name = 'testing_system/detail_task.html'
 
@@ -43,6 +44,7 @@ class DetailTask(FormView):
                 {
                     "file": f"{answer.file}",
                     "dispatch_time": f"{answer.dispatch_time}",
+                    "status": f"{answer.status}",
                 }
             )
         data['answers'] = json.dumps(items)

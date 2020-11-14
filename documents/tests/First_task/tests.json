@@ -1,0 +1,7 @@
+{
+    "Errors": ["compiling"],
+    "Resources": {"time": "12s", "memory":  250},
+    "TestErrors": {"num_test":"4", "input":  "-5  5", "output": "10"},
+    "student_id": 1,
+    "task_id": 2
+}

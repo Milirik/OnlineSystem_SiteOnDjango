@@ -22,7 +22,7 @@ def user_directory_path(instance, filename):
 class Task(models.Model):
     """The task that the teacher created"""
     title = models.CharField(max_length=100, verbose_name='Название задания',
-                             help_text='Название задания')                                                              # Добавить уникаольность
+                             help_text='Название задания')                                                              # Добавить уникальность
     task_text = models.TextField(max_length=1000, db_index=True, verbose_name='Описание самого задания',
                                  help_text='Текст задания')
     date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания задания')
@@ -45,7 +45,7 @@ class Task(models.Model):
 
         super().save(*args, **kwargs)
         with open(f'documents/tests/{"_".join(self.title.split())}/tests.json', 'w') as f:
-            json.dump({}, f)
+            json.dump([], f)
 
         with open(f'documents/required_forms/{"_".join(self.title.split())}/required_form.java', 'w') as f1:
             f1.write(self.required_form)
@@ -64,11 +64,19 @@ class Task(models.Model):
 
 class StudentCodeModel(models.Model):
     """Модель кода, который отправит ученик, как решение задания"""
+    # type_ans = (
+    #     ('err', 'Ошибка'),
+    #     ('check', 'Проверяется'),
+    #     ('Ok', 'Ok'),
+    # )
+
     file = models.FileField(upload_to=user_directory_path, blank=True, verbose_name='Загрузка решения')
     code_text = models.TextField(max_length=1000, blank=True, db_index=True, verbose_name='Решение ученика ввиде кода')
     student = models.ForeignKey(Student, null=True, on_delete=models.CASCADE, verbose_name='Ученик')
     task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, verbose_name='Задание на которое был отправлен ответ')
     dispatch_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата отправки ответа')
+    status = models.CharField(max_length=100, verbose_name='Статус ответа',
+                             help_text='Статус ответа')
 
     def save(self, *args, **kwargs):
         path = f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
@@ -100,11 +108,14 @@ class Test(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         path = Path(f'documents/tests/{"_".join(self.task.title.split())}/tests.json')
-        with open(path) as f:
-            data = json.load(f)
-        data[f'{self.pk}'] = {"input": self.input, "output": self.output}
-        with open(path, 'w') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+        try:
+            data = json.load(open(path))
+        except:
+            data = []
+        data.append({"input": self.input, "output": self.output})
+
+        with open(path, 'w') as f1:
+            json.dump(data, f1, ensure_ascii=False, indent=4)
 
     def __str__(self):
         return f"{self.task.title}'s test"
@@ -124,17 +135,26 @@ def answer_saved(sender, instance, **kwargs):
     except OSError:
         pass
 
-    with open(f'{path_main}/paths.json', 'w') as f:
-        json.dump(
-            {
-                'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
-                'required_form': f'{path_rf}',
-                'tests': f'{path_t}',
-            },
-            f,
-            ensure_ascii=False,
-            indent=4
-        )
+    all_paths = {
+        'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
+        'required_form': f'{path_rf}',
+        'tests': f'{path_t}',
+        "student_id": f'{instance.student.id}',
+        "task_id": f'{instance.task.id}'
+    }
+    # with open(f'{path_main}/paths.json', 'w') as f:
+    #     json.dump(
+    #         {
+    #             'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
+    #             'required_form': f'{path_rf}',
+    #             'tests': f'{path_t}',
+    #             "student_id": f'{instance.student.id}',
+    #             "task_id": f'{instance.task.id}'
+    #         },
+    #         f,
+    #         ensure_ascii=False,
+    #         indent=4
+    #     )
 
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost')
@@ -143,7 +163,7 @@ def answer_saved(sender, instance, **kwargs):
     channel.queue_declare(queue='site_messages')
     channel.basic_publish(exchange='',
                           routing_key='site_messages',
-                          body=f'OnlineSystem_SiteOnDjango/{path_main}',
+                          body=all_paths,
                           )
     print(' [x] Sent path.')
     connection.close()
