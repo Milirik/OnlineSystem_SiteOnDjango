@@ -11,10 +11,22 @@ from .models import Student
 from .forms import RegisterStudentForm
 from .utilities import signer
 
+from OnlineSystem_SiteOnDjango.receiver import AMQPConsuming
+
+
+def start():
+    """ Переделать обязательно """
+    if not AMQPConsuming.flag:
+        AMQPConsuming.flag = True
+        consumer = AMQPConsuming()
+        consumer.daemon = True
+        consumer.start()
+
 
 # Pages
 def index(request):
     """Main page"""
+    start()
     return render(request, 'main/index.html', context={})
 
 
