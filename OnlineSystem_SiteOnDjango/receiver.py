@@ -8,21 +8,19 @@ class AMQPConsuming(threading.Thread):
     flag = False
 
     def callback(self, ch, method, properties, body):
+        print(body)
         ans = body.decode('utf-8')
         ans_s = json.loads(ans)
-        # print(ans_s["Errors"])
-        # print(ans_s["Resources"])
-        # print(ans_s["TestErrors"])
 
-        st_ans = StudentCodeModel.objects.get(pk=ans_s["answer_id"])
+        st_ans = StudentCodeModel.objects.filter(pk=ans_s["answer_id"]).first()
         if st_ans:
             if ans_s["TestErrors"]:
                 st_ans.status = f"Ошибка тестирования. Входные данные: {(ans_s['TestErrors'])['input']}, " \
                                 f"Ожидаемый результат: {(ans_s['TestErrors'])['output']}"
             elif ans_s["Errors"]:
                 st_ans.status = f"В процессе работы программы были выявлены следующие ошибки: {ans_s['Errors']}"
-            else:
-                st_ans.status = f"OK (Время работы: {ans_s['Resources']['time']}, Память: {ans_s['Resources']['memory']})"
+            else :
+                st_ans.status = f"OK"
             st_ans.save()
             print(st_ans.status)
 
