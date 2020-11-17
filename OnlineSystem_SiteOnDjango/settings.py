@@ -26,6 +26,8 @@ AUTH_USER_MODEL = 'main.Student'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+RABBIT_URL = "http://localhost:15672"
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',

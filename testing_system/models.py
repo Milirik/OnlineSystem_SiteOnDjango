@@ -1,13 +1,16 @@
 import json
 import pika
-from datetime import datetime
-from pathlib import Path
 import os
+from datetime import datetime
+import time
+from pathlib import Path
+
 
 from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
 from django.db.models.signals import post_save
+from django.core.paginator import Paginator
 
 from main.models import Teacher, Student
 
@@ -16,6 +19,7 @@ def user_directory_path(instance, filename):
     """Создает путь к папке ответа ученика"""
     # Костыль с определением типа файла
     return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/student_answer_{datetime.now().timestamp()}.{filename.split(".")[-1]}'
+    #return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/student_answer_{datetime.now().timestamp()}'
 
 
 # Testing system
@@ -64,12 +68,6 @@ class Task(models.Model):
 
 class StudentCodeModel(models.Model):
     """Модель кода, который отправит ученик, как решение задания"""
-    # type_ans = (
-    #     ('err', 'Ошибка'),
-    #     ('check', 'Проверяется'),
-    #     ('Ok', 'Ok'),
-    # )
-
     file = models.FileField(upload_to=user_directory_path, blank=True, verbose_name='Загрузка решения')
     code_text = models.TextField(max_length=1000, blank=True, db_index=True, verbose_name='Решение ученика ввиде кода')
     student = models.ForeignKey(Student, null=True, on_delete=models.CASCADE, verbose_name='Ученик')
@@ -79,17 +77,8 @@ class StudentCodeModel(models.Model):
                              help_text='Статус ответа')
 
     def save(self, *args, **kwargs):
-        path = f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
-        if self.code_text != '' and not self.file:
-            try:
-                os.mkdir(f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}')
-            except OSError:
-                pass
-
-            with open(path, 'w') as f:
-                f.write(self.code_text)
-            self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{datetime.now().timestamp()}.java'
-
+        if not self.file:
+            self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/student_answer_{int(round(time.time()*1000))}.java'
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -98,6 +87,7 @@ class StudentCodeModel(models.Model):
     class Meta:
         verbose_name = "Модель ответа ученика"
         verbose_name_plural = "Модели ответов учеников"
+        ordering = ['-dispatch_time']
 
 
 class Test(models.Model):
@@ -127,43 +117,41 @@ class Test(models.Model):
 
 @receiver(post_save, sender=StudentCodeModel)
 def answer_saved(sender, instance, **kwargs):
-    path_main = f'paths/{instance.student.username}_{"_".join(instance.task.title.split())}_{datetime.now().timestamp()}'
-    path_rf = f'OnlineSystem_SiteOnDjango/documents/required_forms/{"_".join(instance.task.title.split())}/required_form.java'
-    path_t = f'OnlineSystem_SiteOnDjango/documents/tests/{"_".join(instance.task.title.split())}/tests.json'
+    path = f'documents/{instance.file}'
     try:
-        os.mkdir(path_main)
-    except OSError:
-        pass
+        with open(f'documents/{instance.file}', 'r') as fr:
+            pass
+        os.remove(f'documents/{instance.file}')
+    except FileNotFoundError:
+        if instance.code_text != '':
+            try:
+                os.mkdir(f'documents/answers/{instance.student.username}_{"_".join(instance.task.title.split())}')
+            except OSError:
+                pass
 
-    all_paths = {
-        'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
-        'required_form': f'{path_rf}',
-        'tests': f'{path_t}',
-        "student_id": f'{instance.student.id}',
-        "task_id": f'{instance.task.id}'
-    }
-    # with open(f'{path_main}/paths.json', 'w') as f:
-    #     json.dump(
-    #         {
-    #             'student_answer': f'OnlineSystem_SiteOnDjango/documents/{instance.file}',
-    #             'required_form': f'{path_rf}',
-    #             'tests': f'{path_t}',
-    #             "student_id": f'{instance.student.id}',
-    #             "task_id": f'{instance.task.id}'
-    #         },
-    #         f,
-    #         ensure_ascii=False,
-    #         indent=4
-    #     )
+            with open(path, 'w') as f:
+                f.write(instance.code_text)
+        print(f" [x] Был сохранен ответ с номером - {instance.pk}")
+        path_rf = f'OnlineSystem_SiteOnDjango/documents/required_forms/{"_".join(instance.task.title.split())}/required_form.java'
+        path_t = f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/tests/{"_".join(instance.task.title.split())}/tests.json'
 
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost')
-    )
-    channel = connection.channel()
-    channel.queue_declare(queue='site_messages')
-    channel.basic_publish(exchange='',
-                          routing_key='site_messages',
-                          body=all_paths,
-                          )
-    print(' [x] Sent path.')
-    connection.close()
+        all_paths = {
+            'student_answer': f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/{f"{instance.file}".split(".")[0]}',
+            'required_form': f'{path_rf}',
+            'tests': f'{path_t}',
+            'answer_id': f'{instance.pk}',
+        }
+
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='localhost')
+        )
+        channel = connection.channel()
+        channel.queue_declare(queue='site_messages')
+        channel.basic_publish(exchange='',
+                              routing_key='site_messages',
+                              body=f'{all_paths}',
+                              )
+        print(' [x] Sent path.')
+        connection.close()
+
+
