@@ -39,3 +39,12 @@ class RegisterStudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
+
+
+class ChangeStudentInfoForm(forms.ModelForm):
+    email = forms.EmailField(required=True, label='Адрес электронный почты')
+
+    class Meta:
+        model = Student
+        fields = ('username', 'email', 'first_name',
+                  'last_name')

@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordResetView, \
@@ -6,11 +7,11 @@ from django.core.paginator import Paginator
 from django.core.signing import BadSignature
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 from testing_system.models import Task, StudentCodeModel
 from .models import Student
-from .forms import RegisterStudentForm
+from .forms import RegisterStudentForm, ChangeStudentInfoForm
 from .utilities import signer
 
 from OnlineSystem_SiteOnDjango.receiver import AMQPConsuming
@@ -123,3 +124,40 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
     # post_reset_login = True
     success_url = reverse_lazy('main:index_url')
     # success_message = 'Пароль успешно изменен'
+
+
+class ChangeStudentInfoView(LoginRequiredMixin, UpdateView):
+    model = Student
+    template_name = 'change_user_data/change_user_info.html'
+    form_class = ChangeStudentInfoForm
+    success_url = reverse_lazy('main:profile_url')
+    # success_message = 'Личные данные пользователя изменены'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
+
+
+class DeleteStudentView(LoginRequiredMixin, DeleteView):
+    model = Student
+    template_name = 'change_user_data/delete_user.html'
+    success_url = reverse_lazy('main:index_url')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        # messages.add_message(request, messages.SUCCESS, 'Пользователь удален')
+        return super().post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)

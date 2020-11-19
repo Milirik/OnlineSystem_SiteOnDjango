@@ -1,0 +1,13 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+	Удаление пользователя
+{% endblock title %}
+
+{% block content %}
+	<h2>Удалить аккаунт?</h2>
+	<form method="post">
+		{% csrf_token %}
+		<input type="submit" value="Удалить">
+	</form>
+{% endblock content %}

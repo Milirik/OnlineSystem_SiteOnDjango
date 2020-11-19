@@ -46,9 +46,10 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="{% url 'main:profile_url' %}">Мой профиль</a>
+                                <a class="dropdown-item" href="{% url 'main:profile_change_url' %}">Изменить данные</a>
+                                <a class="dropdown-item" href="{% url 'main:password_change_url' %}">Изменить пароль</a>
                                 <a class="dropdown-item" href="{% url 'main:logout_url' %}">Выйти</a>
-                                <a class="dropdown-item" href="#">Another action(не работает)</a>
-                                <a class="dropdown-item" href="#">Something else here(не работает)</a>
                             </div>
                         </div>
 
