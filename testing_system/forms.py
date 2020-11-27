@@ -24,6 +24,16 @@ class TaskForm(forms.ModelForm):
 
 
 class TestForm(forms.ModelForm):
+    input = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        help_text='Входные данные'
+    )
+
+    output = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        help_text='Выходные данные'
+    )
+
     class Meta:
         model = Test
         exclude = ()

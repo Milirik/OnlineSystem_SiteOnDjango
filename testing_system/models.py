@@ -18,24 +18,31 @@ from main.models import Teacher, Student
 def user_directory_path(instance, filename):
     """Создает путь к папке ответа ученика"""
     # Костыль с определением типа файла
-    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/' \
-           f'student_answer_{datetime.now().timestamp()}.{filename.split(".")[-1]}'
+    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/{int(round(time.time()*1000))}' \
+           f'/{filename}'
 
 
 # Testing system
 class Task(models.Model):
     """The task that the teacher created"""
     title = models.CharField(max_length=100, verbose_name='Название задания',
-                             help_text='Название задания')
+                             help_text='Название задания', unique=True)
+
     task_text = models.TextField(max_length=1000, db_index=True, verbose_name='Описание самого задания',
                                  help_text='Текст задания')
+
+    name_class = models.CharField(max_length=100, verbose_name='Название класса программы',
+                                  help_text='Название класса программы', default="ReqForm")
+
     date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания задания')
 
-    # Приблизительный формат ввода данных, в будущем возможно нужно будет заменить на отдельные модели
-    required_form = models.TextField(max_length=1000, db_index=True, verbose_name='Шаблон класса, который задал учител',
+    required_form = models.TextField(max_length=1000, db_index=True, verbose_name='Необходимый шаблон класса',
                                      help_text='Шаблон формы учителя')
     teacher = models.ForeignKey(Teacher, null=True, on_delete=models.CASCADE,
                                 verbose_name='Учитель, который приудмал это задание')
+
+    time_limit = models.PositiveIntegerField(verbose_name='Максимальное время выполнения программы(в милисекундах)')
+    memory_limit = models.PositiveIntegerField(verbose_name='Максимальное количество памяти для программы(в байтах)')
 
     def save(self, *args, **kwargs):
         try:
@@ -52,7 +59,7 @@ class Task(models.Model):
         with open(f'documents/tests/{"_".join(self.title.split())}/tests.json', 'w') as f:
             json.dump([], f)
 
-        with open(f'documents/required_forms/{"_".join(self.title.split())}/required_form.java', 'w') as f1:
+        with open(f'documents/required_forms/{"_".join(self.title.split())}/{self.name_class}.java', 'w') as f1:
             f1.write(self.required_form)
 
     def get_absolute_url(self):
@@ -75,12 +82,31 @@ class StudentCodeModel(models.Model):
     task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE,
                              verbose_name='Задание на которое был отправлен ответ')
     dispatch_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата отправки ответа')
-    status = models.CharField(max_length=100, verbose_name='Статус ответа', help_text='Статус ответа')
+    status = models.CharField(max_length=1000, verbose_name='Статус ответа', help_text='Статус ответа',
+                              default='Проверяется')
 
     def save(self, *args, **kwargs):
-        if not self.file:
-            self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/' \
-                        f'student_answer_{int(round(time.time()*1000))}.java'
+        if self.status != "В очереди":
+            # Чистка директорий от файлов
+            os.remove(f'documents/{self.file}')                                                                         # Не удаляется временная папка
+            # os.remove(f'documents/answers/{str(self.file).split("/")[-3]+"/"+str(self.file).split("/")[-2]}')
+
+        else:
+            if not self.file:
+                time_ = int(round(time.time()*1000))
+                self.file = f'answers/{self.student.username}_{"_".join(self.task.title.split())}/{time_}/{self.task.name_class}.java'
+                try:
+                    os.mkdir(f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}')
+                except OSError:
+                    pass
+                try:
+                    os.mkdir(f'documents/answers/{self.student.username}_{"_".join(self.task.title.split())}/{time_}')
+                except OSError:
+                    pass
+
+                with open(f'documents/{self.file}', 'w') as f:
+                    f.write(self.code_text)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -120,33 +146,20 @@ class Test(models.Model):
 
 @receiver(post_save, sender=StudentCodeModel)
 def answer_saved(sender, instance, **kwargs):
-    path = f'documents/{instance.file}'
-    try:
-        with open(f'documents/{instance.file}', 'r') as fr:
-            pass
-        os.remove(f'documents/{instance.file}')
-    except FileNotFoundError:
-        if instance.code_text != '':
-            try:
-                os.mkdir(f'documents/answers/{instance.student.username}_{"_".join(instance.task.title.split())}')
-            except OSError:
-                pass
-
-            with open(path, 'w') as f:
-                f.write(instance.code_text)
-        print(f" [x] Был сохранен ответ с номером - {instance.pk}")
-        path_rf = f'OnlineSystem_SiteOnDjango/documents/required_forms/{"_".join(instance.task.title.split())}' \
-                  f'/required_form.java'
-        path_t = f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/tests/' \
-                 f'{"_".join(instance.task.title.split())}/tests.json'
-
+    if instance.status == "В очереди":
         all_paths = {
-            'student_answer': f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/'
-                              f'{f"{instance.file}".split(".")[0]}',
-            'required_form': f'{path_rf}',
-            'tests': f'{path_t}',
-            'answer_id': f'{instance.pk}',
+            "student_answer": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/'
+                              f'{f"{instance.file}".split(".")[0]}',                                                        # Расширение не отправляется
+            "required_form": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/required_forms/'
+                             f'{"_".join(instance.task.title.split())}/{instance.task.name_class}.java',
+            "tests": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/tests/'
+                     f'{"_".join(instance.task.title.split())}/tests.json',
+            "time_limit": instance.task.time_limit,
+            "memory_limit": instance.task.memory_limit,
+            "answer_id": {instance.pk},
         }
+
+        print(f" [x] Был сохранен ответ с номером - {instance.pk}")
 
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(host='localhost')
@@ -159,5 +172,3 @@ def answer_saved(sender, instance, **kwargs):
                               )
         print(' [x] Sent path.')
         connection.close()
-
-

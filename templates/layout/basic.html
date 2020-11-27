@@ -46,7 +46,6 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="{% url 'main:profile_url' %}">Мой профиль</a>
                                 <a class="dropdown-item" href="{% url 'main:profile_change_url' %}">Изменить данные</a>
                                 <a class="dropdown-item" href="{% url 'main:password_change_url' %}">Изменить пароль</a>
                                 <a class="dropdown-item" href="{% url 'main:logout_url' %}">Выйти</a>
@@ -66,7 +65,6 @@
                 <div class="col-md-3">
                     <ul class="list-group">
                         {% if user.is_authenticated %}
-                            <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Избранные задачи(не работает)</a></li>
                         {% endif %}
                         {% block sidebar %}
 
@@ -81,6 +79,7 @@
             </div>
 
     </main>
+    <script src="{% static 'main.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>

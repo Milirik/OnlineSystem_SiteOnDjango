@@ -15,6 +15,10 @@
     <h3>Текст задания</h3>
     <p>{{ task.task_text }}</p>
     <hr>
+    <h3>Ограничения</h3>
+    <p>Максимальное допустимое время выполнения программы: <b>{{ task.time_limit }} милисекунд</b></p>
+    <p>Максимальная допустимая память для выполнения программы: <b>{{ task.memory_limit }} байт</b></p>
+    <hr>
     {% if user.is_authenticated %}
     <h3>Выберите форму отправки</h3>
         <br>
@@ -39,7 +43,7 @@
 
             <input type="hidden" name="task" value="{{ task.pk }}">
             <input type="hidden" name="student" value="{{ user.pk }}">
-            <input type="hidden" name="status" value="Проверяется">
+            <input type="hidden" name="status" value="В очереди">
         </form>
 
 
@@ -78,25 +82,6 @@
             {% else %}
             <p>Пока нет отправленных ответов</p>
         {% endif %}
-
     {% endif %}
 
-    <script type="text/javascript">
-        var app = new Vue({
-                delimiters: ['[[', ']]'],
-                el: '#counter',
-                data: {
-                    answers: answers,
-                    cur_ans: this.answers[0]
-
-                },
-                methods: {
-                    count() {
-                        this.k++;
-                    },
-
-                }
-            }
-        );
-    </script>
 {% endblock %}

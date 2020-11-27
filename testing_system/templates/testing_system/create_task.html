@@ -30,37 +30,87 @@
             <br>
             {{ form.task_text }}
         </p>
+        <p>
+            {{ form.time_limit.label_tag }}
+            <br>
+            {{ form.time_limit }}
+        </p>
+        <p>
+            {{ form.memory_limit.label_tag }}
+            <br>
+            {{ form.memory_limit }}
+        </p>
         <p>Тесты:</p>
         <hr>
-        {{ tests_formset.management_form }}
-        {% for test in tests_formset %}
-            {% for field in test.visible_fields %}
-                {% if field.errors %}
-                    <ul>
-                        {% for error in field.errors %}
-                            <li><em>{{ error|escape }}</em></li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <p>
-                    {{ field.label_tag }}
-                    {{ field }}
-                </p>
+        <div id="tests">
+            {{ tests_formset.management_form }}
+            {% for test in tests_formset %}
+                <h2>Тест</h2>
+                <div class="form-group row">
+                    <div class="col-9">
+                        <label>{{ test.input.help_text }}</label>
+                        {{ test.input }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-9">
+                         <label>{{ test.output.help_text }}</label>
+                         {{ test.output }}
+                    </div>
+                </div>
             {% endfor %}
+{#            <div class="form-group row">#}
+{#                <div class="col-9">#}
+{#                    <label>Create New Task</label>#}
+{#                    <input class="form-control">#}
+{#                </div>#}
+{#            </div>#}
+{#            {% for test in tests_formset %}#}
+{#                {% for field in test.visible_fields %}#}
+{#                    {% if field.errors %}#}
+{#                        <ul>#}
+{#                            {% for error in field.errors %}#}
+{#                                <li><em>{{ error|escape }}</em></li>#}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                    {% endif %}#}
+{#                    <p>#}
+{#                        {{ field.label_tag }}#}
+{#                        {{ field }}#}
+{#                    </p>#}
+{#                {% endfor %}#}
+{#            {% endfor %}#}
+
+
+
+            <button type="button" @click="hi">Добавить тест</button>
             <hr>
-        {% endfor %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                          <p>
+                              {{ form.required_form.label_tag }}
+                              <br>
+                              {{ form.required_form }}
+                          </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            {{ form.name_class.label_tag }}
+                            <br>
+                            {{ form.name_class }}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
 
-         <p>
-            {{ form.required_form.label_tag }}
+            <input type="hidden" name="teacher" value="{{ user.pk }}">
+
+            <p><input type="submit" value="Создать"></p>
             <br>
-            {{ form.required_form }}
-        </p>
-        <input type="hidden" name="teacher" value="{{ user.pk }}">
-
-        <p><input type="submit" value="Создать"></p>
-        <br>
-        <br>
+            <br>
+        </div>
     </form>
 
 

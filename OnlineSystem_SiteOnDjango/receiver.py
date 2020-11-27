@@ -9,20 +9,21 @@ class AMQPConsuming(threading.Thread):
 
     def callback(self, ch, method, properties, body):
         print(body)
-        ans = body.decode('utf-8')
-        ans_s = json.loads(ans)
+        # Проверка на пустое сообщение
+        if body:
+            ans = body.decode('utf-8')
+            ans_s = json.loads(ans)
+            st_ans = StudentCodeModel.objects.filter(pk=ans_s["answer_id"]).first()
+            if st_ans:
+                st_ans.status = ans_s["status"]
+                st_ans.save()
+                # print(st_ans.status)
+            else:
+                pass
+                # Не нашел запись
+        else:
+            print("Пришел пустой ответ")
 
-        st_ans = StudentCodeModel.objects.filter(pk=ans_s["answer_id"]).first()
-        if st_ans:
-            if ans_s["TestErrors"]:
-                st_ans.status = f"Ошибка тестирования. Входные данные: {(ans_s['TestErrors'])['input']}, " \
-                                f"Ожидаемый результат: {(ans_s['TestErrors'])['output']}"
-            elif ans_s["Errors"]:
-                st_ans.status = f"В процессе работы программы были выявлены следующие ошибки: {ans_s['Errors']}"
-            else :
-                st_ans.status = f"OK"
-            st_ans.save()
-            print(st_ans.status)
 
     @staticmethod
     def _get_connection():

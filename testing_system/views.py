@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
@@ -28,6 +29,10 @@ class DetailTask(FormView):
     """ Описывает задание и отправляет ответ """
     form_class = StudentCodeModelForm
     template_name = 'testing_system/detail_task.html'
+
+    def get(self, request, pk):
+        # print("Гет")
+        return self.render_to_response(self.get_context_data())
 
     def get_initial(self, initial=None):
         """Return the initial data to use for forms on this view."""
@@ -63,6 +68,12 @@ class CreateTask(LoginRequiredMixin, FormView):
     """Создает новое задание"""
     form_class = TaskForm
     template_name = 'testing_system/create_task.html'
+
+    def get(self, request):
+        # tasks = list(Task.objects.values())
+        # if request.is_ajax():
+        #     return JsonResponse({'tasks': tasks}, status=200)
+        return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
