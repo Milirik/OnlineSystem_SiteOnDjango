@@ -1,30 +1,53 @@
+from abc import ABC
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.urls import reverse_lazy, reverse
+
+from django.views.generic import FormView, DetailView, ListView, View
 
 import json
 
+
 from main.models import Student
-from .models import Task, StudentCodeModel
+from .models import Task, StudentCodeModel, Course, CourseStudentAccess
 from .forms import StudentCodeModelForm, TaskForm, TestFormSet
 
 
 # Create your views here.
 def index(request):
-    """All tasks"""
-    tasks = Task.objects.all()
     return render(request,
                   'testing_system/index.html',
                   context={
-                      'tasks': tasks,
                   })
 
 
+# Курсы
+class CoursesView(ListView):
+    template_name = 'testing_system/courses_list.html'
+    context_object_name = "courses"
+
+    def get_queryset(self):
+        return Course.objects.all()
+
+
+class DetailCourse(DetailView):
+    model = Course
+    template_name = 'testing_system/detail_course.html'
+    crumbs = [('My Test Breadcrumb', reverse_lazy('main:index_url'))]
+
 # Задания
+class TasksView(ListView):
+    template_name = 'testing_system/tasks_list.html'
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        return Task.objects.all()
+
+
 class DetailTask(FormView):
     """ Описывает задание и отправляет ответ """
     form_class = StudentCodeModelForm

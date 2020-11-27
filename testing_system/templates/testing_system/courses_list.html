@@ -1,0 +1,46 @@
+{% extends 'layout/basic.html' %}
+
+{% load static %}
+
+{% block title %}
+    All courses
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a href="{% url 'main:index_url' %}">Сортировка(не работает)</a></li>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">
+        Курсы
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>Все курсы</h1>
+    <hr>
+
+
+    {% for course in courses %}
+
+        <div class="card mb-3">
+            <img height="150px" src="{% static 'back.jpg' %}" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a class="" href="{{ course.get_absolute_url }}"><q>{{ course.title }}</q></a>
+                    <span class="text-muted"> by {{ course.teacher.first_name }}</span>
+                    <span class="text-muted"> {{ course.teacher.last_name }}</span>
+                    <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>
+                </h5>
+                <p class="card-text">{{ course.description }}</p>
+                <p class="card-text"><small class="text-muted">{{ course.date_publish }}</small></p>
+            </div>
+        </div>
+
+       
+        <br>
+    {% endfor %}
+
+
+
+{% endblock %}

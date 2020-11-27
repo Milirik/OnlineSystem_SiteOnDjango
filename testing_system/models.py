@@ -63,7 +63,7 @@ class Task(models.Model):
             f1.write(self.required_form)
 
     def get_absolute_url(self):
-        return reverse('testing_system:detail_url', args=[self.pk])
+        return reverse('testing_system:detail_task_url', args=[self.pk])
 
     def __str__(self):
         return f'"{self.title}" by {self.teacher.username}'
@@ -144,8 +144,35 @@ class Test(models.Model):
         verbose_name_plural = 'Тесты'
 
 
+class Course(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Название курса')
+    description = models.TextField(max_length=1000, blank=True, verbose_name='Описание курса')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name='Создатель', related_name='teacher_boss')
+    tasks = models.ManyToManyField(Task)
+    students = models.ManyToManyField(Student, through='CourseStudentAccess', through_fields=('course', 'student'))
+    date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания курса')
+
+    def get_absolute_url(self):
+        return reverse('testing_system:detail_course_url', args=[self.pk])
+
+    def __str__(self):
+        return f'"{self.title}" by {self.teacher.username}'
+
+    class Meta:
+        verbose_name = "Курс"
+        verbose_name_plural = "Курсы"
+        ordering = ['-date_publish']
+
+
+class CourseStudentAccess(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    access = models.BooleanField(default=False)
+
+
 @receiver(post_save, sender=StudentCodeModel)
 def answer_saved(sender, instance, **kwargs):
+    """ Отправка сообщения в rabbitmq после создания ответа ученика"""
     if instance.status == "В очереди":
         all_paths = {
             "student_answer": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/'

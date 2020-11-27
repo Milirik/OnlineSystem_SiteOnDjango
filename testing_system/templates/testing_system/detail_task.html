@@ -3,6 +3,15 @@
     Detail task № {{ task.pk }}
 {% endblock %}
 
+{% block breadcrumb %}
+     <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'testing_system:tasks_list_url' %}">Задания</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ task.title }}
+    </li>
+{% endblock %}
+
 {% block content %}
     <script>
         var answers = {{ answers|safe }};

@@ -1,8 +1,7 @@
 {% extends 'layout/basic.html' %}
 
-
 {% block title %}
-    Main page
+    All courses
 {% endblock %}
 
 {% block sidebar %}
@@ -10,16 +9,17 @@
 {% endblock %}
 
 {% block breadcrumb %}
-     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'main:index_url' %}">Главная</a>
+    <li class="breadcrumb-item active" aria-current="page">
+        Задания
     </li>
 {% endblock %}
 
-{% block content %}
 
-    <h1>Главная страница тестирующей системы</h1>
+{% block content %}
+    <h1>Все задания</h1>
     <hr>
-    {% include 'includes/task_crads.html' %}
-    
+    {% include 'includes/task_crads.html'%}
+
+
 
 {% endblock %}
