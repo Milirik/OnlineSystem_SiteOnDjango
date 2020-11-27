@@ -1,1 +1,9 @@
 /OnlineSystem_SiteOnDjango/.env
+.idea
+/.idea/OnlineSystem_SiteOnDjango.iml
+/.idea/vcs.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/workspace.xml
+/.idea/dbnavigator.xml

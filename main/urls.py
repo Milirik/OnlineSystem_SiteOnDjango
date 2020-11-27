@@ -21,6 +21,8 @@ urlpatterns = [
     path('password/change/', ForumPasswordChangeView.as_view(), name='password_change_url'),
 
 
-    path('profile/', profile, name='profile_url')
+    path('profile/', profile, name='profile_url'),
+    path('profile/change/', ChangeStudentInfoView.as_view(), name='profile_change_url'),
+    path('profile/delete/', DeleteStudentView.as_view(), name='profile_delete_url'),
 ]
 

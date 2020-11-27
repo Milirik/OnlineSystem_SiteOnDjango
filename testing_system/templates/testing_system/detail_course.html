@@ -1,0 +1,28 @@
+{% extends 'layout/basic.html' %}
+{% block title %}
+    Detail course № {{ course.pk }}
+{% endblock %}
+
+{% block breadcrumb %}
+     <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ course.title }}
+    </li>
+{% endblock %}
+
+
+{% block content %}
+    <h3>Курс: {{ course.title }}</h3>
+    <p>Создатель: {{ course.teacher.first_name }} {{ course.teacher.last_name }} <span style="color: #A01D26;"> @{{ course.teacher.username }} </span></p>
+    <p>Создано: <span class="text-muted">{{ course.date_publish }}</span></p>
+    <hr>
+    <h3>Описание</h3>
+    <p>{{ course.description }}</p>
+    <hr>
+    <h3>Задания</h3>
+
+    {% include 'includes/task_crads.html' with tasks=course.tasks.all %}
+
+{% endblock %}
