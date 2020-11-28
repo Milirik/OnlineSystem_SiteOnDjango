@@ -28,7 +28,7 @@
                     <a class="nav-link" href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'testing_system:tasks_list_url' %}">Задания</a>
+                    <a class="nav-link" href="{% url 'testing_system:user_tasks_list_url' %}">Задания</a>
                 </li>
 
                 </li>
@@ -80,10 +80,11 @@
                     <div>
                         <nav aria-label="breadcrumb" style="background-color: #F4F4EF">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <a href="{% url 'main:index_url' %}">Главная</a>
-                                </li>
+
                                 {% block breadcrumb %}
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        <a href="{% url 'main:index_url' %}">Главная</a>
+                                    </li>
                                 {% endblock %}
                             </ol>
                         </nav>

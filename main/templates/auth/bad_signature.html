@@ -3,6 +3,13 @@
 	Ошибка при активации
 {% endblock title %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        Ошибка регистрации
+    </li>
+{% endblock %}
+
 {% block content %}
 
 	<h2>Активация</h2>

@@ -1,0 +1,75 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+    All courses
+{% endblock %}
+
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Управление курсами
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <h1>Управление курсами</h1>
+    <hr>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for course in courses %}
+            <h4>Курс <a href="{% url 'testing_system:detail_course_url' pk=course.pk%}"><q>{{ course.title }}</q></a></h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Никнейм</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Статистика</th>
+                </tr>
+                </thead>
+                <tbody>
+{#                {% for access in access_list %}#}
+{#                    {% if course.pk == access.course.pk and not access.access %}#}
+{#                        <p>#}
+{#                            - {{ access.student.username }} запросил доступ.#}
+{#                            <button class="btn btn-outline-dark">Дать доступ</button>#}
+{#                            <input type="hidden" name="course_" value="{{ course.pk }}">#}
+{#                            <input type="hidden" name="student_" value="{{ access.student.pk }}">#}
+{#                        </p>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+                {% for csa in course.coursestudentaccess_set.all %}
+                    <tr>
+                        <th scope="row">{{ csa.student.username }}</th>
+                        <td>{{ csa.student.first_name }} {{ csa.student.last_name }}</td>
+                        <td>
+                            {% if not csa.access %}
+                                <p>
+                                    <button class="btn btn-outline-dark"><b style="color: red">Дать доступ</b></button>
+                                    <input type="hidden" name="course_" value="{{ course.pk }}">
+                                    <input type="hidden" name="student_" value="{{ csa.student.pk }}">
+                                </p>
+                            {% else %}
+                                <p><b style="color: green">Допущен</b></p>
+                            {% endif %}
+                        </td>
+                        <td>@mdo</td>
+                    </tr>
+                {% endfor %}
+
+
+
+                </tbody>
+            </table>
+
+
+        {% endfor %}
+    </form>
+
+{% endblock %}

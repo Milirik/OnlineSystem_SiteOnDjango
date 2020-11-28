@@ -4,6 +4,17 @@
 	Правка данных
 {% endblock title %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Правка личных данных
+    </li>
+{% endblock %}
+
+
 {% block content %}
 	<h2>Правка личных данных пользователя {{ user.username }}</h2>
 	<form method="post" enctype="multipart/form-data">

@@ -4,8 +4,12 @@
 {% endblock %}
 
 {% block breadcrumb %}
+    {{ block.super }}
      <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'testing_system:tasks_list_url' %}">Задания</a>
+        <a href="{% url 'testing_system:user_tasks_list_url' %}">Курсы</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'testing_system:detail_course_url' pk=task.course.pk%}">{{ task.course.title }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {{ task.title }}

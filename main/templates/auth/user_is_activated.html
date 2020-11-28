@@ -3,6 +3,13 @@
 	Пользователь уже активирован
 {% endblock title %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        Активация
+    </li>
+{% endblock %}
+
 {% block content %}
 
 	<h2>Активация</h2>

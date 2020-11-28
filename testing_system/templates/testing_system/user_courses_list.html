@@ -1,0 +1,26 @@
+{% extends 'layout/basic.html' %}
+
+
+{% block title %}
+    User's courses
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Курсы {{ user.username }}
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>Курсы <a href="{% url 'main:profile_url' %}">{{ user.username }}</a></h1>
+    <hr>
+    {% include 'includes/course_cards.html' with courses=user_courses %}
+
+{% endblock %}

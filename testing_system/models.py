@@ -23,6 +23,31 @@ def user_directory_path(instance, filename):
 
 
 # Testing system
+class Course(models.Model):
+    KINDS = (
+        ('true', 'Открытый'),
+        ('false', 'Закрытый'),
+    )
+
+    title = models.CharField(max_length=100, verbose_name='Название курса')
+    description = models.TextField(max_length=1000, blank=True, verbose_name='Описание курса')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name='Создатель', related_name='teacher_boss')
+    students = models.ManyToManyField(Student, through='CourseStudentAccess', through_fields=('course', 'student'))
+    availability = models.CharField(max_length=15, choices=KINDS, blank=False, default='true')
+    date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания курса')
+
+    def get_absolute_url(self):
+        return reverse('testing_system:detail_course_url', args=[self.pk])
+
+    def __str__(self):
+        return f'"{self.title}" by {self.teacher.username}'
+
+    class Meta:
+        verbose_name = "Курс"
+        verbose_name_plural = "Курсы"
+        ordering = ['-date_publish']
+
+
 class Task(models.Model):
     """The task that the teacher created"""
     title = models.CharField(max_length=100, verbose_name='Название задания',
@@ -40,26 +65,26 @@ class Task(models.Model):
                                      help_text='Шаблон формы учителя')
     teacher = models.ForeignKey(Teacher, null=True, on_delete=models.CASCADE,
                                 verbose_name='Учитель, который приудмал это задание')
-
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс задания')
     time_limit = models.PositiveIntegerField(verbose_name='Максимальное время выполнения программы(в милисекундах)')
     memory_limit = models.PositiveIntegerField(verbose_name='Максимальное количество памяти для программы(в байтах)')
 
     def save(self, *args, **kwargs):
-        try:
-            os.mkdir(f'documents/tests/{"_".join(self.title.split())}')
-        except OSError:
-            pass
-
-        try:
-            os.mkdir(f'documents/required_forms/{"_".join(self.title.split())}')
-        except OSError:
-            pass
-
         super().save(*args, **kwargs)
-        with open(f'documents/tests/{"_".join(self.title.split())}/tests.json', 'w') as f:
+        try:
+            os.mkdir(f'documents/tests/{"_".join(self.title.split())}_{self.id}')
+        except OSError:
+            pass
+
+        try:
+            os.mkdir(f'documents/required_forms/{"_".join(self.title.split())}_{self.id}')
+        except OSError:
+            pass
+
+        with open(f'documents/tests/{"_".join(self.title.split())}_{self.id}/tests.json', 'w') as f:
             json.dump([], f)
 
-        with open(f'documents/required_forms/{"_".join(self.title.split())}/{self.name_class}.java', 'w') as f1:
+        with open(f'documents/required_forms/{"_".join(self.title.split())}_{self.id}/{self.name_class}.java', 'w') as f1:
             f1.write(self.required_form)
 
     def get_absolute_url(self):
@@ -72,6 +97,16 @@ class Task(models.Model):
         verbose_name = "Задание"
         verbose_name_plural = "Задания"
         ordering = ['-date_publish']
+
+
+class CourseStudentAccess(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    access = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Доступ к закрытым курсам"
+        verbose_name_plural = "Доступы к закрытым курсам"
 
 
 class StudentCodeModel(models.Model):
@@ -118,6 +153,37 @@ class StudentCodeModel(models.Model):
         ordering = ['-dispatch_time']
 
 
+@receiver(post_save, sender=StudentCodeModel)
+def answer_saved(sender, instance, **kwargs):
+    """ Отправка сообщения в rabbitmq после создания ответа ученика"""
+    if instance.status == "В очереди":
+        all_paths = {
+            "student_answer": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/'
+                              f'{f"{instance.file}".split(".")[0]}',                                                        # Расширение не отправляется
+            "required_form": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/required_forms/'
+                             f'{"_".join(instance.task.title.split())}_{instance.task.id}/{instance.task.name_class}.java',
+            "tests": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/tests/'
+                     f'{"_".join(instance.task.title.split())}_{instance.task.id}/tests.json',
+            "time_limit": instance.task.time_limit,
+            "memory_limit": instance.task.memory_limit,
+            "answer_id": instance.pk,
+        }
+
+        print(f" [x] Был сохранен ответ с номером - {instance.pk}")
+
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='localhost')
+        )
+        channel = connection.channel()
+        channel.queue_declare(queue='site_messages')
+        channel.basic_publish(exchange='',
+                              routing_key='site_messages',
+                              body=f'{all_paths}',
+                              )
+        print(' [x] Sent path.')
+        connection.close()
+
+
 class Test(models.Model):
     input = models.CharField(max_length=200, db_index=True, verbose_name='Данные на вход', help_text='Входные данные')
     output = models.CharField(max_length=200, db_index=True, verbose_name='Данные на выход',
@@ -126,7 +192,7 @@ class Test(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        path = Path(f'documents/tests/{"_".join(self.task.title.split())}/tests.json')
+        path = Path(f'documents/tests/{"_".join(self.task.title.split())}_{self.task.id}/tests.json')
         try:
             data = json.load(open(path))
         except:
@@ -144,58 +210,3 @@ class Test(models.Model):
         verbose_name_plural = 'Тесты'
 
 
-class Course(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Название курса')
-    description = models.TextField(max_length=1000, blank=True, verbose_name='Описание курса')
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name='Создатель', related_name='teacher_boss')
-    tasks = models.ManyToManyField(Task)
-    students = models.ManyToManyField(Student, through='CourseStudentAccess', through_fields=('course', 'student'))
-    date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания курса')
-
-    def get_absolute_url(self):
-        return reverse('testing_system:detail_course_url', args=[self.pk])
-
-    def __str__(self):
-        return f'"{self.title}" by {self.teacher.username}'
-
-    class Meta:
-        verbose_name = "Курс"
-        verbose_name_plural = "Курсы"
-        ordering = ['-date_publish']
-
-
-class CourseStudentAccess(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    access = models.BooleanField(default=False)
-
-
-@receiver(post_save, sender=StudentCodeModel)
-def answer_saved(sender, instance, **kwargs):
-    """ Отправка сообщения в rabbitmq после создания ответа ученика"""
-    if instance.status == "В очереди":
-        all_paths = {
-            "student_answer": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/'
-                              f'{f"{instance.file}".split(".")[0]}',                                                        # Расширение не отправляется
-            "required_form": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/required_forms/'
-                             f'{"_".join(instance.task.title.split())}/{instance.task.name_class}.java',
-            "tests": f'C:/Users/Кирилл/Desktop/Git/OnlineSystem_SiteOnDjango/documents/tests/'
-                     f'{"_".join(instance.task.title.split())}/tests.json',
-            "time_limit": instance.task.time_limit,
-            "memory_limit": instance.task.memory_limit,
-            "answer_id": {instance.pk},
-        }
-
-        print(f" [x] Был сохранен ответ с номером - {instance.pk}")
-
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost')
-        )
-        channel = connection.channel()
-        channel.queue_declare(queue='site_messages')
-        channel.basic_publish(exchange='',
-                              routing_key='site_messages',
-                              body=f'{all_paths}',
-                              )
-        print(' [x] Sent path.')
-        connection.close()
