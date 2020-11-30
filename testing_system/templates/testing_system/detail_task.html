@@ -86,7 +86,9 @@
                             <th scope="row">[[ index+1 ]]</th>
                             <td>[[ answer.file ]]</td>
                             <td>[[ answer.dispatch_time ]]</td>
-                            <td v-bind:style="styleObject">[[ answer.status ]]</td>
+                            <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
+                            error: answer.status=='All tests passed' ? false : true,
+                             }">[[ answer.status ]]</td>
                          </tr>
                      </template>
                 </tbody>

@@ -7,17 +7,17 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 
-from django.views.generic import FormView, DetailView, ListView, View
+from django.views.generic import FormView, DetailView, ListView, View, CreateView
 
 import json
 
 
 from main.models import Student
 from .models import Task, StudentCodeModel, Course, CourseStudentAccess
-from .forms import StudentCodeModelForm, TaskForm, TestFormSet
+from .forms import StudentCodeModelForm, TaskForm,  CourseForm, TestFormSet
 
 
-# Create your views here.
+# Main page
 def index(request):
     return render(request,
                   'testing_system/index.html',
@@ -34,7 +34,7 @@ class CoursesView(ListView):
         return Course.objects.all()
 
 
-class UserCoursesView(ListView):
+class UserCoursesView(LoginRequiredMixin, ListView):
     template_name = 'testing_system/user_courses_list.html'
     context_object_name = "courses"
 
@@ -42,7 +42,7 @@ class UserCoursesView(ListView):
         return Course.objects.filter(coursestudentaccess__student=self.request.user)
 
 
-class CourseControlView(ListView):
+class CourseControlView(LoginRequiredMixin, ListView):
     template_name = 'testing_system/course_control.html'
     context_object_name = "courses"
 
@@ -87,43 +87,44 @@ class DetailCourse(DetailView):
         return data
 
 
-class CreateCourse(LoginRequiredMixin, FormView):
-    """Создает новое задание"""
-    form_class = TaskForm
-    template_name = 'testing_system/create_task.html'
-
-    def get(self, request):
-        # tasks = list(Task.objects.values())
-        # if request.is_ajax():
-        #     return JsonResponse({'tasks': tasks}, status=200)
-        return self.render_to_response(self.get_context_data())
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data['tests_formset'] = TestFormSet(self.request.POST)
-        else:
-            data['tests_formset'] = TestFormSet()
-        return data
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        tests = context['tests_formset']
-        with transaction.atomic():
-            self.object = form.save()
-
-            if tests.is_valid():
-                tests.instance = self.object
-                tests.save()
-        return super(CreateTask, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('testing_system:index_url')
+@login_required
+def create_course(request):
+    if request.method == 'POST':
+        form = CourseForm(request.POST)
+        if form.is_valid():
+            course = form.save()
+            new_access = CourseStudentAccess()
+            new_access.student = request.user
+            new_access.course = course
+            new_access.access = True
+            new_access.save()
+            return redirect('testing_system:detail_course_url', pk=course.pk)
+            # formset = TaskFormSet(request.POST, instance=course)
+            # if formset.is_valid():
+            #     formset.save()
+    else:
+        form = CourseForm(initial={'teacher': request.user.pk})
+        # formset = TaskFormSet(initial=[
+        #     {'teacher': request.user.pk},
+        #     {'teacher':  request.user.pk}]
+        # )
+    context = {
+        "form": form,
+        # "formset": formset
+    }
+    return render(request, 'testing_system/create_course.html', context=context)
 
 
-# Переделать под курс
+@login_required
+def course_control_tasks(request):
+    context = {
+        "courses": Course.objects.filter(teacher=request.user)
+    }
+    return render(request, 'testing_system/control_course_tasks.html', context=context)
+
+
 # Задания
-class UserTasksView(ListView):
+class UserTasksView(LoginRequiredMixin, ListView):
     template_name = 'testing_system/user_tasks_list.html'
     context_object_name = "tasks"
 
@@ -132,7 +133,7 @@ class UserTasksView(ListView):
                                   Q(course__coursestudentaccess__access=True))
 
 
-class DetailTask(FormView):
+class DetailTask(LoginRequiredMixin, FormView):
     """ Описывает задание и отправляет ответ """
     form_class = StudentCodeModelForm
     template_name = 'testing_system/detail_task.html'
@@ -168,38 +169,31 @@ class DetailTask(FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('testing_system:detail_course_url', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('testing_system:detail_task_url', kwargs={'pk': self.kwargs['pk']})
 
 
-class CreateTask(LoginRequiredMixin, FormView):
-    """Создает новое задание"""
-    form_class = TaskForm
-    template_name = 'testing_system/create_task.html'
+@login_required
+def create_task(request, pk):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save()
+            formset = TestFormSet(request.POST, instance=task)
+            if formset.is_valid():
+                formset.save()
+                return redirect('testing_system:course_control_tasks_url')
+    else:
+        form = TaskForm(
+            initial={
+                'teacher': request.user.pk,
+                'course': Course.objects.get(pk=pk)
+            },
+        )
+        tests_formset = TestFormSet()
 
-    def get(self, request):
-        # tasks = list(Task.objects.values())
-        # if request.is_ajax():
-        #     return JsonResponse({'tasks': tasks}, status=200)
-        return self.render_to_response(self.get_context_data())
+    context = {
+        'form': form,
+        'tests_formset': tests_formset
+    }
+    return render(request, 'testing_system/create_task.html', context=context)
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data['tests_formset'] = TestFormSet(self.request.POST)
-        else:
-            data['tests_formset'] = TestFormSet()
-        return data
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        tests = context['tests_formset']
-        with transaction.atomic():
-            self.object = form.save()
-
-            if tests.is_valid():
-                tests.instance = self.object
-                tests.save()
-        return super(CreateTask, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('testing_system:index_url')

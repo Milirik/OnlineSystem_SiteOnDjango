@@ -21,3 +21,10 @@ nav{
     background-color: #ACBEBE;
 }
 
+.success{
+    color: green;
+}
+
+.error{
+    color: red;
+}

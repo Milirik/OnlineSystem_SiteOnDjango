@@ -122,8 +122,9 @@ class StudentCodeModel(models.Model):
 
     def save(self, *args, **kwargs):
         if self.status != "В очереди":
+            pass
             # Чистка директорий от файлов
-            os.remove(f'documents/{self.file}')                                                                         # Не удаляется временная папка
+            # os.remove(f'documents/{self.file}')                                                                         # Не удаляется временная папка
             # os.remove(f'documents/answers/{str(self.file).split("/")[-3]+"/"+str(self.file).split("/")[-2]}')
 
         else:

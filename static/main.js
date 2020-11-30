@@ -17,9 +17,14 @@ var app = new Vue({
         el: '#counter',
         data: {
             answers: answers,
-            cur_ans: this.answers[0]
+            status_colors: {
+                "All tests passed": "green",
+                "Error": "red"
+            }
         },
-        methods: {}
+        methods: {
+        },
+
     }
 );
 

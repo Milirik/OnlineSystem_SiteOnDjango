@@ -1,0 +1,30 @@
+{% extends 'layout/basic.html' %}
+{% block title %}
+    Create course
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Участники курсов</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Создать новый курс
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>Новый курс</h1>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+
+        <input type="submit" value="Save"/>
+    </form>
+{% endblock content %}
