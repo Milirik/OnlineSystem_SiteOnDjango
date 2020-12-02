@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 
-from .models import StudentCodeModel, Task, Test
+from .models import StudentCodeModel, Task, Test, Course
 
 
 class StudentCodeModelForm(forms.ModelForm):
@@ -21,6 +21,17 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = '__all__'
+        widgets = {
+            'teacher': forms.HiddenInput,
+            'course': forms.HiddenInput
+        }
+
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        exclude = ('students',)
+        widgets = {'teacher': forms.HiddenInput}
 
 
 class TestForm(forms.ModelForm):

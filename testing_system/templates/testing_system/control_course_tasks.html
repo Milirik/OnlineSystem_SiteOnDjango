@@ -1,0 +1,69 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}
+    All courses
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Курсы</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_members_url' %}">Участники курсов</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Управление задачами курсов
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <h1>Управление задачами курсов</h1>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        {% for course in courses %}
+            <h4>
+                Курс <a href="{% url 'testing_system:detail_course_url' pk=course.pk %}"><q>{{ course.title }}</q></a>
+                <a class="btn btn-outline-dark" href="{% url 'testing_system:create_task_url' pk=course.pk %}">Добавить задачу</a>
+            </h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Название класса</th>
+                    <th scope="col">Необходимая форма</th>
+                    <th scope="col">Ограничение по времени</th>
+                    <th scope="col">Ограничение по памяти</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Редактировать</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in course.task_set.all %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'testing_system:detail_task_url' pk=task.pk %}">{{ task.title }}</a></th>
+                        <td>{{ task.task_text }}</td>
+                        <td>{{ task.name_class}}</td>
+                        <td>{{ task.required_form}}</td>
+                        <td>{{ task.time_limit}}</td>
+                        <td>{{ task.memory_limit}}</td>
+                        <td>{{ task.date_publish}}</td>
+                        <th scope="col">
+                            <a href="{% url 'testing_system:change_task_url' pk=task.course.pk pk_task=task.pk %}" class="btn btn-outline-dark">Редактировать</a>
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </form>
+
+{% endblock %}

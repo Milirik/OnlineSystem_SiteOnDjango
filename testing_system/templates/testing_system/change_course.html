@@ -1,0 +1,33 @@
+{% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}
+    Create course
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Курсы</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_members_url' %}">Участники курсов</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Изменить курс
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>Изменить курс {{ form.course.title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% bootstrap_form form layout='horizontal' %}
+		{% buttons submit='Сохранить изменения' %} {% endbuttons %}
+	</form>
+{% endblock content %}

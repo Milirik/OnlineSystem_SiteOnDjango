@@ -1,0 +1,117 @@
+{% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}
+    Create task
+{% endblock %}
+
+{% block sidebar %}
+    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Участники курсов</a></li>
+    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'testing_system:course_control_tasks_url' %}">Управление задачами курсов</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Редактировать задачу
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h2>Редактировать задачу</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        {% bootstrap_formset formset layout='horizontal' %}
+        {% buttons submit='Сохранить изменения' %} {% endbuttons %}
+{#        {% csrf_token %}#}
+{#        {% for hidden in form.hidden_fields %}#}
+{#            {{ hidden }}#}
+{#        {% endfor %}#}
+{#        {% if form.non_field_errors %}#}
+{#            <ul>#}
+{#                {% for error in form.non_field_errors %}#}
+{#                    <li><em>{{ error|escape }}</em></li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        {% endif %}#}
+{#        <p>#}
+{#            {{ form.title.label_tag }}#}
+{#            <br>#}
+{#            {{ form.title }}#}
+{#        </p>#}
+{#         <p>#}
+{#            {{ form.task_text.label_tag }}#}
+{#            <br>#}
+{#            {{ form.task_text }}#}
+{#        </p>#}
+{#        <p>#}
+{#            {{ form.time_limit.label_tag }}#}
+{#            <br>#}
+{#            {{ form.time_limit }}#}
+{#        </p>#}
+{#        <p>#}
+{#            {{ form.memory_limit.label_tag }}#}
+{#            <br>#}
+{#            {{ form.memory_limit }}#}
+{#        </p>#}
+{#        <p>Тесты:</p>#}
+{#        <hr>#}
+{#        <div id="tests">#}
+{#            {{ tests_formset.management_form }}#}
+{#            {{ tests_formset.as_p }}#}
+{#            {% for test in tests_formset %}#}
+{#                <h2>Тест</h2>#}
+{#                <div class="form-group row">#}
+{#                    <div class="col-9">#}
+{#                        <label>{{ test.input.help_text }}</label>#}
+{#                        {{ test.input }}#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group row">#}
+{#                    <div class="col-9">#}
+{#                        <label>{{ test.output.help_text }}</label>#}
+{#                        {{ test.output }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <hr>#}
+{##}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-md-6">#}
+{#                    <p>#}
+{#                        {{ form.required_form.label_tag }}#}
+{#                        <br>#}
+{#                        {{ form.required_form }}#}
+{#                    </p>#}
+{#                </div>#}
+{#                <div class="col-md-6">#}
+{#                    <p>#}
+{#                        {{ form.name_class.label_tag }}#}
+{#                        <br>#}
+{#                        {{ form.name_class }}#}
+{#                    </p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        <p><input type="submit" value="Сохранить изменения"></p>#}
+        <br>
+        <br>
+
+    </form>
+
+
+{% endblock %}

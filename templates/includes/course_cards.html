@@ -1,0 +1,34 @@
+{% load static %}
+{% load thumbnail %}
+
+{% for course in courses %}
+    <div class="card mb-3">
+{#        <img height="150px" src="{% static 'back.jpg' %}" class="card-img-top" alt="">#}
+         {% if course.image %}
+                <img class="card-img-top" src="{% thumbnail course.image 'default' %}">
+         {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">
+                <a class="" href="{{ course.get_absolute_url }}"><q>{{ course.title }}</q></a>
+                {% if course.availability == "true" %}
+                    <span class="badge badge-success">Доступен для всех</span>
+                {% else %}
+                    <span class="badge badge-danger">Закрытый</span>
+                {% endif %}
+
+                {% if course in user_courses %}
+                    <span class="badge badge-info">Получен</span>
+                {% endif %}
+
+            </h5>
+            <p>
+                <span class="text-muted"> by {{ course.teacher.first_name }}</span>
+                <span class="text-muted"> {{ course.teacher.last_name }}</span>
+                <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>
+            </p>
+            <p class="card-text">{{ course.description }}</p>
+            <p class="card-text"><small class="text-muted">{{ course.date_publish }}</small></p>
+        </div>
+    </div>
+    <br>
+{% endfor %}

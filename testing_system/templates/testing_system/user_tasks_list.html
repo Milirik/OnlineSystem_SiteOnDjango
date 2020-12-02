@@ -9,14 +9,15 @@
 {% endblock %}
 
 {% block breadcrumb %}
+    {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
-        Задания
+       Доступные задания
     </li>
 {% endblock %}
 
 
 {% block content %}
-    <h1>Все задания</h1>
+    <h1>Здесь отображаются все доступные <a href="{% url 'main:profile_url' %}">{{ user.username }}</a> задания</h1>
     <hr>
     {% include 'includes/task_crads.html'%}
 

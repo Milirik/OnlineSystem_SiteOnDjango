@@ -4,6 +4,13 @@
 	Регистрация завершена
 {% endblock title %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        Письмо было отправлено
+    </li>
+{% endblock %}
+
 {% block content %}
 	<h2>Регистрация</h2>
 	<p>Регистрация нового пользователя.</p>

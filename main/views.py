@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 from testing_system.models import Task, StudentCodeModel
-from .models import Student
+from .models import Student, Teacher
 from .forms import RegisterStudentForm, ChangeStudentInfoForm
 from .utilities import signer
 
@@ -54,7 +54,6 @@ def profile(request):
     paginator = Paginator(submitted_solutions, 3)
     page_number = request.GET.get('page', default=1)
     page = paginator.get_page(page_number)
-    print(page.object_list)
     is_paginated = page.has_other_pages()
     prev_url = '?page={}'.format(page.previous_page_number()) if page.has_previous() else ''
     next_url = '?page={}'.format(page.next_page_number()) if page.has_next() else ''

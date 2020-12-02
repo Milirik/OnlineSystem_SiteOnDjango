@@ -4,6 +4,16 @@
 	Удаление пользователя
 {% endblock title %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Удалить аккаунт
+    </li>
+{% endblock %}
+
 {% block content %}
 	<h2>Удалить аккаунт?</h2>
 	<form method="post">

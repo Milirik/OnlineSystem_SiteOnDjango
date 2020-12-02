@@ -1,14 +1,27 @@
 {% extends 'layout/basic.html' %}
 
+{% load bootstrap4 %}
+
 {% block title %}
 	Правка данных
 {% endblock title %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'main:profile_url' %}">Мой профиль</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        Правка личных данных
+    </li>
+{% endblock %}
+
 
 {% block content %}
 	<h2>Правка личных данных пользователя {{ user.username }}</h2>
 	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{ form.as_p }}
-        <input type="submit" value="Сохранить">
+        {% bootstrap_form form layout='horizontal' %}
+        {% buttons submit='Сохранить' %} {% endbuttons %}
 	</form>
 {% endblock content %}

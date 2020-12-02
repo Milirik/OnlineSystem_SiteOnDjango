@@ -4,6 +4,13 @@
     Registration
 {% endblock %}
 
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">
+        Регистрация
+    </li>
+{% endblock %}
+
 {% block content %}
      <h1>Регистрация</h1>
      <form method="post">

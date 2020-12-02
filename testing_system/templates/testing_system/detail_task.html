@@ -4,8 +4,12 @@
 {% endblock %}
 
 {% block breadcrumb %}
+    {{ block.super }}
      <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'testing_system:tasks_list_url' %}">Задания</a>
+        <a href="{% url 'testing_system:user_tasks_list_url' %}">Курсы</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'testing_system:detail_course_url' pk=task.course.pk%}">{{ task.course.title }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {{ task.title }}
@@ -82,7 +86,9 @@
                             <th scope="row">[[ index+1 ]]</th>
                             <td>[[ answer.file ]]</td>
                             <td>[[ answer.dispatch_time ]]</td>
-                            <td v-bind:style="styleObject">[[ answer.status ]]</td>
+                            <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
+                            error: answer.status=='All tests passed' ? false : true,
+                             }">[[ answer.status ]]</td>
                          </tr>
                      </template>
                 </tbody>
