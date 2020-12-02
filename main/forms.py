@@ -47,4 +47,4 @@ class ChangeStudentInfoForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ('username', 'email', 'first_name',
-                  'last_name')
+                  'last_name', 'image')

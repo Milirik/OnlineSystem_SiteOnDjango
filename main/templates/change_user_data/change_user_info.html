@@ -1,5 +1,7 @@
 {% extends 'layout/basic.html' %}
 
+{% load bootstrap4 %}
+
 {% block title %}
 	Правка данных
 {% endblock title %}
@@ -19,7 +21,7 @@
 	<h2>Правка личных данных пользователя {{ user.username }}</h2>
 	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{ form.as_p }}
-        <input type="submit" value="Сохранить">
+        {% bootstrap_form form layout='horizontal' %}
+        {% buttons submit='Сохранить' %} {% endbuttons %}
 	</form>
 {% endblock content %}

@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import Signal
-from .utilities import send_activation_notification
+from .utilities import send_activation_notification, user_image_path
+
 
 # Сигнал об отправки письма регистрации
 user_registration = Signal(providing_args=['instance'])
@@ -18,6 +19,7 @@ user_registration.connect(user_registration_dispatcher)
 class Student(AbstractUser):
     """Model for new people and students"""
     is_activated = models.BooleanField(default=True, db_index=True, verbose_name='Прошел активацию?')
+    image = models.ImageField(blank=True, upload_to=user_image_path, verbose_name='Изображение')
 
     def __str__(self):
         return f'{self.username}'

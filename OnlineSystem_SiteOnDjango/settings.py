@@ -28,6 +28,25 @@ LOGOUT_REDIRECT_URL = '/'
 
 RABBIT_URL = "http://localhost:15672"
 
+THUMBNAIL_ALIASES = {
+    'main.Student.image': {
+        'default': {
+            'size': (260, 200),
+            'crop': 'smart',
+        },
+        'mini': {
+            'size': (50, 50),
+            'crop': 'scale',
+        }
+    },
+    'testing_system.Course.image': {
+        'default': {
+            'size': (0, 300),
+            'crop': 'scale',
+        },
+    }
+}
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,6 +56,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'main',
     'testing_system',
+    'bootstrap4',
+    'django_cleanup',
+    'easy_thumbnails'
 )
 
 MIDDLEWARE = [

@@ -1,25 +1,16 @@
 import json
 import pika
 import os
-from datetime import datetime
-import time
-from pathlib import Path
 
+from pathlib import Path
 
 from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
 from django.db.models.signals import post_save
 
-
 from main.models import Teacher, Student
-
-
-def user_directory_path(instance, filename):
-    """Создает путь к папке ответа ученика"""
-    # Костыль с определением типа файла
-    return f'answers/{instance.student.username}_{"_".join(instance.task.title.split())}/{int(round(time.time()*1000))}' \
-           f'/{filename}'
+from .utilities import user_directory_path, course_image_path
 
 
 # Testing system
@@ -33,8 +24,10 @@ class Course(models.Model):
     description = models.TextField(max_length=1000, blank=True, verbose_name='Описание курса')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name='Создатель', related_name='teacher_boss')
     students = models.ManyToManyField(Student, through='CourseStudentAccess', through_fields=('course', 'student'))
-    availability = models.CharField(max_length=15, choices=KINDS, blank=False, default='true')
+    availability = models.CharField(max_length=15, choices=KINDS, blank=False, default='true', verbose_name='Доступность')
+    image = models.ImageField(blank=True, upload_to=course_image_path, verbose_name='Изображение')
     date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания курса')
+    is_shown = models.BooleanField(default=False, verbose_name='Отображать курс для всех?')
 
     def get_absolute_url(self):
         return reverse('testing_system:detail_course_url', args=[self.pk])
@@ -61,13 +54,15 @@ class Task(models.Model):
 
     date_publish = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания задания')
 
-    required_form = models.TextField(max_length=1000, db_index=True, verbose_name='Необходимый шаблон класса',
+    required_form = models.TextField(max_length=4000, db_index=True, verbose_name='Необходимый шаблон класса',
                                      help_text='Шаблон формы учителя')
     teacher = models.ForeignKey(Teacher, null=True, on_delete=models.CASCADE,
                                 verbose_name='Учитель, который приудмал это задание')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс задания')
     time_limit = models.PositiveIntegerField(verbose_name='Максимальное время выполнения программы(в милисекундах)')
     memory_limit = models.PositiveIntegerField(verbose_name='Максимальное количество памяти для программы(в байтах)')
+    reference_solution = models.TextField(max_length=4000, db_index=True, verbose_name='Правильное решение',
+                                     help_text='Правильное решение')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

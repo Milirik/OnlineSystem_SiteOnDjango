@@ -1,7 +1,12 @@
 {% load static %}
+{% load thumbnail %}
+
 {% for course in courses %}
     <div class="card mb-3">
-        <img height="150px" src="{% static 'back.jpg' %}" class="card-img-top" alt="">
+{#        <img height="150px" src="{% static 'back.jpg' %}" class="card-img-top" alt="">#}
+         {% if course.image %}
+                <img class="card-img-top" src="{% thumbnail course.image 'default' %}">
+         {% endif %}
         <div class="card-body">
             <h5 class="card-title">
                 <a class="" href="{{ course.get_absolute_url }}"><q>{{ course.title }}</q></a>

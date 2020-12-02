@@ -1,5 +1,7 @@
 {% extends 'layout/basic.html' %}
 
+{% load thumbnail %}
+
 {% block title %}
     Профиль пользователя
 {% endblock %}
@@ -33,7 +35,7 @@
     <div class="row">
         <div class="col-lg-4">
             {% if user.image %}
-                <img class="profile_photo" src="{{ user.image.url }}">
+                <img class="profile_photo" src="{% thumbnail user.image 'default' %}">
             {% endif %}
         </div>
         <div class="col-lg-8">
