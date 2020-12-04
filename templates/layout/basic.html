@@ -11,43 +11,64 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-md navbar-light">
-        <a class="navbar-brand" href="{% url 'main:index_url' %}">JavaTest</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'main:index_url' %}"><img height="60" src="{% static 'logo.png' %}"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <div class="collapse navbar-collapse ml-4" id="navbarsExampleDefault" >
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{% url 'main:index_url' %}">Главная</a>
-
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
+                    <a style="color: #32e2b4" class="nav-link" href="">&bull;</a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
+                    <a style="color: #32e2b4" class="nav-link" href="">&bull;</a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" href="{% url 'testing_system:user_tasks_list_url' %}">Задания</a>
                 </li>
-
+                <li class="nav-item active">
+                    <form class="form-inline ml-5">
+                        <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input style="border: 2px solid #32e2b4;background: #e4e4e4" type="text"
+                                   class="form-control"
+                                   id="inlineFormInputGroupUsername2" placeholder="Название курса">
+                            <div class="input-group-prepend">
+                                <button style="background-color: #32e2b4;  border: 2px solid #32e2b4;" type="button"
+                                        class="btn btn-primary btn-sm"><img height="15px" src="{% static 'lupa.png' %}">
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </li>
             </ul>
+
+
+
+
+
+
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
                     <a class="nav-link active" href="{% url 'main:profile_url' %}">{{ user.username }}
                         {% if user.teacher %}
-                            <span style="color: red">Teacher</span>
+                            <span style="color: #32e2b4">Teacher</span>
                         {% endif %}
                     </a>
-
-
                         <div class="btn-group">
-                            <a class="btn btn-outline-dark" href="{% url 'main:profile_url' %}" role="button">
+                            <a style="border: 2px solid #32e2b4;" class="btn btn-outline-dark" href="{% url 'main:profile_url' %}" role="button">
                                 Профиль
                             </a>
-
-                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                            <button style="background-color: #32e2b4;" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
@@ -60,38 +81,39 @@
 
 
                 {% else %}
-                    <a class="nav-link" href="{% url 'main:login_url' %}">Войти/Зарегестрироваться</a>
+                    <a class="nav-link" href="{% url 'main:login_url' %}">Войти/Зарегистрироваться</a>
                 {% endif %}
             </div>
         </div>
     </nav>
 
-    <main role="main" class="container-fluid">
+    <main role="main" class="container-fluid mt-5">
             <div class="row justify-content-between">
-                <div class="col-md-3">
-                    <ul class="list-group">
-                        {% if user.is_authenticated %}
-                        {% endif %}
-                        {% block sidebar %}
-                        {% endblock %}
-                    </ul>
-                </div>
-                <div class="col-md-9">
-                    <div>
-                        <nav aria-label="breadcrumb" style="background-color: #F4F4EF">
-                            <ol class="breadcrumb">
-
-                                {% block breadcrumb %}
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        <a href="{% url 'main:index_url' %}">Главная</a>
-                                    </li>
-                                {% endblock %}
-                            </ol>
-                        </nav>
-
-                        {% block content %}
-                        {% endblock %}
+                <div class="col-md-2">
+                    <div class="sidebar">
+                        <ul class="nav flex-column">
+                            {% if user.is_authenticated %}
+                            {% endif %}
+                            {% block sidebar %}
+                                <p class="top_side_bar">Главная</p>
+                            {% endblock %}
+                        </ul>
                     </div>
+                </div>
+
+                <div class="col-md-10">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" style="font-size: 12px; background-color: #f6f6f6">
+                            {% block breadcrumb %}
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <a href="{% url 'main:index_url' %}">Главная</a>
+                                </li>
+                            {% endblock %}
+                        </ol>
+                    </nav>
+
+                    {% block content %}
+                    {% endblock %}
                 </div>
             </div>
 

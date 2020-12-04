@@ -7,7 +7,8 @@
 
 {% block sidebar %}
     {% if user.is_active %}
-        <li class="list-group-item"><a href="{% url 'testing_system:user_courses_list_url' %}">Мои курсы</a></li>
+        <li class="nav-item"><a class="top_side_bar">Все курсы</a></li>
+        <li class="nav-item"><a href="{% url 'testing_system:user_courses_list_url' %}">— Мои курсы</a></li>
     {% endif %}
 {% endblock %}
 
@@ -21,6 +22,9 @@
 {% block content %}
     <h1>Все курсы</h1>
     <hr>
+    <div class="sidebar" style="margin-bottom: 20px; height: 100px">
+    </div>
+
     {% include 'includes/course_cards.html'%}
 
 {% endblock %}

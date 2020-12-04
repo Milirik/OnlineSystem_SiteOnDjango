@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a href="{% url 'main:index_url' %}">Сортировка(не работает)</a></li>
+    <li class="nav-item"><a class="top_side_bar">Все доступные курсы из заданий</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -15,12 +15,8 @@
     </li>
 {% endblock %}
 
-
 {% block content %}
     <h1>Здесь отображаются все доступные <a href="{% url 'main:profile_url' %}">{{ user.username }}</a> задания</h1>
     <hr>
     {% include 'includes/task_crads.html'%}
-
-
-
 {% endblock %}

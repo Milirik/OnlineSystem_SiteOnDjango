@@ -1,7 +1,13 @@
 {% extends 'layout/basic.html' %}
 
+{% load bootstrap4 %}
+
 {% block title %}
     Authorization
+{% endblock %}
+
+{% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Авторизация</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -15,8 +21,8 @@
     <h1>Авторизация</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Войти">
+        {% bootstrap_form form layout='horizontal' %}
+        <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Войти">
     </form>
     <p><a href="{% url 'main:registration_url' %}">Регистрация</a></p>
     <p><a href="{% url 'main:password_reset_url' %}">Забыли пароль?</a></p>

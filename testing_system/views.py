@@ -233,7 +233,7 @@ def create_task(request, pk):
                 'course': Course.objects.get(pk=pk)
             },
         )
-        tests_formset = TestFormSet()
+    tests_formset = TestFormSet()
 
     context = {
         'form': form,
@@ -263,6 +263,6 @@ def change_task(request, pk, pk_task):
             },
             instance=task
         )
-        formset = TestFormSet(instance=task)
+    formset = TestFormSet(instance=task)
     context = {'form': form, 'formset': formset}
     return render(request, 'testing_system/change_task.html', context)

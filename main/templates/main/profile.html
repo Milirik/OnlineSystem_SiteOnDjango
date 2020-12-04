@@ -8,12 +8,11 @@
 
 
 {% block sidebar %}
-    <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Отправленные задачи(не работает)</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:user_courses_list_url' %}">Мои курсы</a></li>
+{#    <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Отправленные задачи(не работает)</a></li>#}
+    <li class="nav-item"><a class="top_side_bar">Мой профиль</a></li>
+    <li class="nav-item"><a href="{% url 'testing_system:user_courses_list_url' %}">— Мои курсы</a></li>
     {% if user.teacher  %}
-{#        <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Созданные задачи(не работает)</a></li>#}
-{#        <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_url' %}">Создать задачу</a></li>#}
-        <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Управление курсами</a></li>
+        <li class="nav-item"><a href="{% url 'testing_system:course_control_url' %}">— Управление курсами</a></li>
     {% endif %}
 {% endblock %}
 
@@ -29,7 +28,7 @@
 {% block content %}
     <h2>Профиль пользователя {{ user.username }}
     {% if user.teacher %}
-        <span style="color: red">Teacher</span>
+        <span style="color: #32e2b4">Teacher</span>
     {% endif %}
     </h2>
     <div class="row">

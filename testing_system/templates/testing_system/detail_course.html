@@ -8,7 +8,7 @@
     <form method="post">
     {% csrf_token %}
     {% if not access_model and user.is_active %}
-        <li class="list-group-item">
+        <li class="nav-item">
             <button class="btn btn-outline-dark">Получить курс</button>
         </li>
     {% elif not user.is_active %}

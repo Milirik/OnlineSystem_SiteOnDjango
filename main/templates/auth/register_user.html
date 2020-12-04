@@ -1,7 +1,13 @@
 {% extends 'layout/basic.html' %}
 
+{% load bootstrap4 %}
+
 {% block title %}
     Registration
+{% endblock %}
+
+{% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Регистрация</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -15,7 +21,7 @@
      <h1>Регистрация</h1>
      <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Зарегестрироваться">
+        {% bootstrap_form form layout='horizontal' %}
+        <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Зарегестрироваться">
     </form>
 {% endblock %}
