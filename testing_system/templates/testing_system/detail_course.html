@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block sidebar %}
-
+    <li class="nav-item"><a class="top_side_bar"><q>{{ course.title }}</q></a></li>
     <form method="post">
     {% csrf_token %}
     {% if not access_model and user.is_active %}
@@ -18,11 +18,15 @@
     {% else %}
         {% if not access_model.access %}
             <li class="list-group-item">
-                Запрос на получение курса отправлен
+                <b style="color: #A01D26">Запрос на получение курса отправлен</b>
             </li>
         {% endif %}
     {% endif %}
      </form>
+
+    <li class="nav-item"><a href="#description">— Описание</a></li>
+    <li class="nav-item"><a href="#tasks">— Задания</a></li>
+
 {% endblock %}
 
 {% block breadcrumb %}
@@ -54,10 +58,10 @@
     <p>Создатель: {{ course.teacher.first_name }} {{ course.teacher.last_name }} <span style="color: #A01D26;"> @{{ course.teacher.username }} </span></p>
     <p>Создано: <span class="text-muted">{{ course.date_publish }}</span></p>
     <hr>
-    <h3>Описание</h3>
+    <h3 id="descriptions">Описание</h3>
     <p>{{ course.description }}</p>
     <hr>
-    <h3>Задания</h3>
+    <h3 id="tasks">Задания</h3>
     {% if not access_model or not access_model.access %}
         <b style="color: red">Нет доступа</b>
     {% else %}

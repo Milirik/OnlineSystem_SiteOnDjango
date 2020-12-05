@@ -15,6 +15,13 @@ class StudentCodeModelForm(forms.ModelForm):
     class Meta:
         model = StudentCodeModel
         fields = '__all__'
+        widgets = {
+            'teacher': forms.HiddenInput,
+            'course': forms.HiddenInput,
+            'student': forms.HiddenInput,
+            'task': forms.HiddenInput,
+            'status': forms.HiddenInput
+        }
 
 
 class TaskForm(forms.ModelForm):

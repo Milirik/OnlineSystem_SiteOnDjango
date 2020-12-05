@@ -31,13 +31,15 @@
         <span style="color: #32e2b4">Teacher</span>
     {% endif %}
     </h2>
+    <hr>
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-2">
             {% if user.image %}
-                <img class="profile_photo" src="{% thumbnail user.image 'default' %}">
+{#                <img class="profile_photo" src="{% thumbnail user.image 'default' %}">#}
+                <img class="profile_photo" src="{{ user.image.url }}">
             {% endif %}
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <p>Имя профиля: {{ user.username }}</p>
             <p>Ваше имя:
                 {% if user.first_name and user.last_name %}
@@ -45,7 +47,6 @@
                 {% else %}
                     <b style="color:red;">Не указано</b>
                 {% endif %}
-
             </p>
             <p>Email: {{ user.email }}</p>
             <p>Дата регистрации: {{ user.date_joined }}</p>
@@ -64,28 +65,29 @@
         </div>
     </div>
     <hr>
-    {% if user.teacher %}
-        <h3>Созданные курсы:</h3>
-        {% if user.teacher.teacher_boss.all  %}
-            {% include 'includes/course_cards.html' with courses=user.teacher.teacher_boss.all %}
-        {% else %}
-            <p style="color: red">Вы пока не создали ни одного курса</p>
-        {% endif %}
-        <hr>
-        <h3>Созданные задачи:</h3>
-        {% if tasks %}
-            {% include 'includes/task_crads.html' %}
-        {% else %}
-            <p style="color: red">Вы пока не создали ни одного задания</p>
-        {% endif %}
-        <hr>
-    {% endif %}
+{#    {% if user.teacher %}#}
+{#        <h3>Созданные курсы:</h3>#}
+{#        {% if user.teacher.teacher_boss.all  %}#}
+{#            {% include 'includes/course_cards.html' with courses=user.teacher.teacher_boss.all %}#}
+{#        {% else %}#}
+{#            <p style="color: red">Вы пока не создали ни одного курса</p>#}
+{#        {% endif %}#}
+{#        <hr>#}
+{#        <h3>Созданные задачи:</h3>#}
+{#        {% if tasks %}#}
+{#            {% include 'includes/task_crads.html' %}#}
+{#        {% else %}#}
+{#            <p style="color: red">Вы пока не создали ни одного задания</p>#}
+{#        {% endif %}#}
+{#        <hr>#}
+{#    {% endif %}#}
     <div>
         <h3>Отправленные решения:</h3>
-        <table class="table">
+        <table class="table table-sm table-bordered">
             <thead>
             <tr>
                 <th scope="col">Задание</th>
+                <th scope="col">Курс</th>
                 <th scope="col">Название файла</th>
                 <th scope="col">Время отправки</th>
                 <th scope="col">Итог</th>
@@ -94,7 +96,8 @@
             <tbody id="counter">
             {% for solution in page_object.object_list %}
                 <tr>
-                    <td><a href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
+                    <td><a class="body_a" href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
+                    <td><a class="body_a" href="{% url 'testing_system:detail_course_url' pk=solution.task.course.pk %}">{{ solution.task.course }}</a></td>
                     <td>{{ solution.file }}</td>
                     <td>{{ solution.dispatch_time }}</td>
                     <td>{{ solution.status }}</td>
@@ -104,14 +107,13 @@
             </tbody>
         </table>
         {% if is_paginated %}
-            <nav aria-label="Page navigation example" style="background-color: #F4F4EF">
+            <nav aria-label="Page navigation example" style="background-color: #f6f6f6">
                 <ul class="pagination">
-                    <li class="page-item {% if not prev_url %}disabled{% endif %} "><a class="page-link"
-                                                                                       href="{{ prev_url }}">Previous</a>
+                    <li class="page-item {% if not prev_url %}disabled{% endif %} ">
+                        <a class="page-link" href="{{ prev_url }}">Previous</a>
                     </li>
 
                     {% for n in page_object.paginator.page_range %}
-
                         {% if page_object.number == n %}
                             <li class="page-item disabled"><a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
                         {% elif n > page_object.number|add:-2 and n < page_object.number|add:2 %}

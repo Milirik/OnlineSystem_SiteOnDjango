@@ -3,7 +3,7 @@
         {% for task in tasks %}
                 <div class="card border-dark mb-3" >
                     <p class="card-header">
-                        <a style="font-size:20px" href="{{ task.get_absolute_url }}"><q>{{ task.title }}</q></a>
+                        <a class="body_a"  style="font-size:20px" href="{{ task.get_absolute_url }}"><q>{{ task.title }}</q></a>
                         <span> by {{ task.teacher.first_name }}</span>
                         <span> {{ task.teacher.last_name }}</span>
                         <span> @{{ task.teacher.username }}</span>
@@ -15,26 +15,6 @@
 
                 </div>
                 <br>
-{#            <div class="col-3">#}
-{#                <div class="card text-white mb-3" style="max-width: 18rem;background-color: #32e2b4;">#}
-{#                    <div class="card-header"><a style="font-size:20px"#}
-{#                                                href="{{ task.get_absolute_url }}"><q>{{ task.title }}</q></a>#}
-{#                    </div>#}
-{#                    <div class="card-body">#}
-{#                        <p class="card-title">#}
-{#                            <span> by {{ task.teacher.first_name }}</span>#}
-{#                            <span> {{ task.teacher.last_name }}</span>#}
-{#                            <span> @{{ task.teacher.username }}</span>#}
-{#                        </p>#}
-{#                        <p>#}
-{#                            <span><small><em>{{ task.date_publish }}</em></small></span>#}
-{#                        </p>#}
-{#                        <p class="card-text">{{ task.task_text }}</p>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-
-
         {% endfor %}
 {#    </div>#}
 {#</div>#}

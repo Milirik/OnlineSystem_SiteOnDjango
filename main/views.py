@@ -51,7 +51,7 @@ def profile(request):
     tasks = Task.objects.filter(teacher=request.user)
     submitted_solutions = StudentCodeModel.objects.filter(student=request.user)
 
-    paginator = Paginator(submitted_solutions, 3)
+    paginator = Paginator(submitted_solutions, 6)
     page_number = request.GET.get('page', default=1)
     page = paginator.get_page(page_number)
     is_paginated = page.has_other_pages()

@@ -107,8 +107,8 @@ class CourseStudentAccess(models.Model):
 
 class StudentCodeModel(models.Model):
     """Модель кода, который отправит ученик, как решение задания"""
-    file = models.FileField(upload_to=user_directory_path, blank=True, verbose_name='Загрузка решения')
-    code_text = models.TextField(max_length=1000, blank=True, db_index=True, verbose_name='Решение ученика ввиде кода')
+    code_text = models.TextField(max_length=1000, blank=True, db_index=True, verbose_name='Введите свое решение здесь')
+    file = models.FileField(upload_to=user_directory_path, blank=True, verbose_name='Или отправьте свое решение в виде файла')
     student = models.ForeignKey(Student, null=True, on_delete=models.CASCADE, verbose_name='Ученик')
     task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE,
                              verbose_name='Задание на которое был отправлен ответ')

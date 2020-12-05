@@ -31,7 +31,7 @@ RABBIT_URL = "http://localhost:15672"
 THUMBNAIL_ALIASES = {
     'main.Student.image': {
         'default': {
-            'size': (260, 200),
+            'size': (300, 300),
             'crop': 'smart',
         },
         'mini': {
