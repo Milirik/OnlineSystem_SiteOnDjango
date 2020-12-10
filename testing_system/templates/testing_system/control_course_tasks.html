@@ -1,5 +1,7 @@
 {% extends 'layout/basic.html' %}
 
+{% load my_tags %}
+
 {% block title %}
     All courses
 {% endblock %}
@@ -35,7 +37,6 @@
                     <th scope="col">Название</th>
                     <th scope="col">Описание</th>
                     <th scope="col">Название класса</th>
-                    <th scope="col">Необходимая форма</th>
                     <th scope="col">Ограничение по времени</th>
                     <th scope="col">Ограничение по памяти</th>
                     <th scope="col">Дата создания</th>
@@ -47,11 +48,10 @@
                     <tr>
                         <th scope="row"><a href="{% url 'testing_system:detail_task_url' pk=task.pk %}">{{ task.title }}</a></th>
                         <td>{{ task.task_text }}</td>
-                        <td>{{ task.name_class}}</td>
-                        <td>{{ task.required_form}}</td>
-                        <td>{{ task.time_limit}}</td>
-                        <td>{{ task.memory_limit}}</td>
-                        <td>{{ task.date_publish}}</td>
+                        <td>{{ task.name_class }}</td>
+                        <td>{{ task.time_limit | number_cut }}</td>
+                        <td>{{ task.memory_limit | number_cut2 }}</td>
+                        <td>{{ task.date_publish }}</td>
                         <th scope="col">
                             <a href="{% url 'testing_system:change_task_url' pk=task.course.pk pk_task=task.pk %}" class="btn btn-outline-dark">Редактировать</a>
                         </th>

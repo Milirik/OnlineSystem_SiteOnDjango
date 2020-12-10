@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 
 {% block title %}
-    Authorization
+    Авторизация
 {% endblock %}
 
 {% block sidebar %}
@@ -19,9 +19,12 @@
 
 {% block content %}
     <h1>Авторизация</h1>
+
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form layout='horizontal' %}
+        <div class="col-md-6">
+            {% bootstrap_form form layout='horizontal' %}
+        </div>
         <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Войти">
     </form>
     <p><a href="{% url 'main:registration_url' %}">Регистрация</a></p>

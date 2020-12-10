@@ -2,6 +2,10 @@
 
 {% load bootstrap4 %}
 
+{% block title %}
+	Правка данных
+{% endblock title %}
+
 {% block sidebar %}
     <li class="nav-item"><a class="top_side_bar">Изменение информации пользователя</a></li>
 {% endblock %}
@@ -16,9 +20,6 @@
     </li>
 {% endblock %}
 
-{% block title %}
-	Правка данных
-{% endblock title %}
 
 {% block content %}
 	<h2>Правка личных данных пользователя {{ user.username }}</h2>

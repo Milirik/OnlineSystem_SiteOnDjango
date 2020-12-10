@@ -1,9 +1,10 @@
 {% extends 'layout/basic.html' %}
 
 {% load bootstrap4 %}
+{% load my_tags %}
 
 {% block title %}
-    Detail task № {{ task.pk }}
+    Описание задания № {{ task.pk }}
 {% endblock %}
 
 {% block sidebar %}
@@ -55,8 +56,8 @@
             {% include 'includes/numbers.html' with num=2 %}
             <div class="col-11">
                 <h5>Ограничения</h5>
-                <p>Максимальное допустимое время выполнения программы: <b>{{ task.time_limit }} милисекунд</b></p>
-                <p>Максимальная допустимая память для выполнения программы: <b>{{ task.memory_limit }} байт</b></p>
+                <p>Максимальное время выполнения: <b>{{ task.time_limit | number_cut }}</b></p>
+                <p>Максимальная память для программы: <b>{{ task.memory_limit | number_cut2 }}</b></p>
             </div>
         </div>
         <hr>
@@ -95,7 +96,7 @@
             {% include 'includes/numbers.html' with num=4 %}
             <div class="col-10">
                 {% if user.is_authenticated %}
-                    <h5>Отправленные ответы</h5>
+                    <h5>Отправленные решения</h5>
                     {% if answers %}
 
                         <table class="table table-sm table-bordered">
@@ -111,7 +112,7 @@
                             <template v-for="(answer, index) in answers">
                                 <tr>
                                     <th scope="row">[[ index+1 ]]</th>
-                                    <td>[[ answer.file ]]</td>
+                                    <td>[[ answer.file | cut ]]</td>
                                     <td>[[ answer.dispatch_time ]]</td>
                                     <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
                             error: answer.status=='All tests passed' ? false : true,

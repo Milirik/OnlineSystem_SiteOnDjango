@@ -12,7 +12,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'main:index_url' %}"><img height="60" src="{% static 'logo.png' %}"></a>
+        <span class="navbar-brand" href="{% url 'main:index_url' %}"><img height="60" src="{% static 'logo.png' %}"></span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -24,17 +24,19 @@
                     <a class="nav-link" href="{% url 'main:index_url' %}">Главная</a>
                 </li>
                 <li class="nav-item active">
-                    <a style="color: #32e2b4" class="nav-link" href="">&bull;</a>
+                    <span style="color: #32e2b4" class="nav-link">&bull;</span>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
+                    <a class="nav-link" href="{% url 'testing_system:courses_list_url' %}">Все курсы</a>
                 </li>
-                <li class="nav-item active">
-                    <a style="color: #32e2b4" class="nav-link" href="">&bull;</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'testing_system:user_tasks_list_url' %}">Задания</a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item active">
+                        <span style="color: #32e2b4" class="nav-link">&bull;</span>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'testing_system:user_tasks_list_url' %}">Мои задания</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item active">
                     <form class="form-inline ml-5">
                         <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
@@ -54,11 +56,11 @@
 
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <a class="nav-link active" href="{% url 'main:profile_url' %}">{{ user.username }}
+                    <span class="nav-link active">{{ user.username }}
                         {% if user.teacher %}
                             <span style="color: #32e2b4">Teacher</span>
                         {% endif %}
-                    </a>
+                    </span>
                         <div class="btn-group">
                             <a style="border: 2px solid #32e2b4;" class="btn btn-outline-dark" href="{% url 'main:profile_url' %}" role="button">
                                 Профиль

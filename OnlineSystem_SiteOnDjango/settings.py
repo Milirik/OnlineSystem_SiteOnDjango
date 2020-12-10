@@ -44,6 +44,10 @@ THUMBNAIL_ALIASES = {
             'size': (0, 300),
             'crop': 'scale',
         },
+        'mini': {
+            'size': (300, 100),
+            'crop': 'smart',
+        }
     }
 }
 
@@ -58,7 +62,7 @@ INSTALLED_APPS = (
     'testing_system',
     'bootstrap4',
     'django_cleanup',
-    'easy_thumbnails'
+    'easy_thumbnails',
 )
 
 MIDDLEWARE = [

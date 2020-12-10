@@ -24,6 +24,13 @@ var app = new Vue({
         },
         methods: {
         },
+        filters:{
+            cut: function (value){
+                if(!value) return ''
+                value = value.toString()
+                return value.split('/').pop()
+            }
+        }
 
     }
 );

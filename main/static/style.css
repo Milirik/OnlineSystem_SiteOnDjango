@@ -92,3 +92,15 @@ hr{
 .page-link{
     color: black;
 }
+
+
+.block_a{
+    /*border: 0px solid #32e2b4;*/
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.block_a:hover{
+    background-color: #32e2b4;
+    /*border: 3px solid #32e2b4;*/
+}

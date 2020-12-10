@@ -1,19 +1,25 @@
 {#<div class="container">#}
 {#    <div class="row">#}
         {% for task in tasks %}
-                <div class="card border-dark mb-3" >
+            <div class="card border-dark mb-3" onclick="location.href='{{ task.get_absolute_url }}'">
+                <div class="block_a">
                     <p class="card-header">
-                        <a class="body_a"  style="font-size:20px" href="{{ task.get_absolute_url }}"><q>{{ task.title }}</q></a>
-                        <span> by {{ task.teacher.first_name }}</span>
-                        <span> {{ task.teacher.last_name }}</span>
-                        <span> @{{ task.teacher.username }}</span>
+                        <span style="font-size:20px">
+                            <q>{{ task.title }}</q>
+                            <span>
+                                (course <q>{{ task.course.title }}</q>)
+                            </span>
+                        </span>
+{#                        <span> by {{ task.teacher.first_name }}</span>#}
+{#                        <span> {{ task.teacher.last_name }}</span>#}
+{#                        <span> @{{ task.teacher.username }}</span>#}
                         <span class="float-right"><small><em>{{ task.date_publish }}</em></small></span>
                     </p>
                     <div class="card-body">
                         <p class="card-text">{{ task.task_text }}</p>
                     </div>
-
                 </div>
+            </div>
                 <br>
         {% endfor %}
 {#    </div>#}

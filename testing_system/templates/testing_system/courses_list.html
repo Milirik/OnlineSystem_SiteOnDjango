@@ -2,12 +2,12 @@
 
 
 {% block title %}
-    All courses
+    Все курсы
 {% endblock %}
 
 {% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Все курсы</a></li>
     {% if user.is_active %}
-        <li class="nav-item"><a class="top_side_bar">Все курсы</a></li>
         <li class="nav-item"><a href="{% url 'testing_system:user_courses_list_url' %}">— Мои курсы</a></li>
     {% endif %}
 {% endblock %}

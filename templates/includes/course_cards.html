@@ -3,39 +3,41 @@
 
 <div class="container-fluid">
     <div class="row">
+
         {% for course in courses %}
             <div class="col-md-6">
-                <div class="card mb-3">
-                    <div class="row no-gutters">
-
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a class="body_a" href="{{ course.get_absolute_url }}">
-                                        <q>{{ course.title }}</q>
-                                    </a>
-                                    <span class="h6">
+                <div class="card mb-3" onclick="location.href='{{ course.get_absolute_url }}'">
+                    <div class="block_a">
+                        <div class="row no-gutters">
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span>
+                                            <q>{{ course.title }}</q>
+                                        </span>
+                                        <span class="h6">
                                         {% if course.availability == "true" %}
                                             <span class="badge badge-success">Доступен для всех</span>
                                         {% else %}
                                             <span class="badge badge-danger">Закрытый</span>
                                         {% endif %}
-                                        {% if course in user_courses %}
-                                            <span class="badge badge-info">Получен</span>
-                                        {% endif %}
+                                            {% if course in user_courses %}
+                                                <span class="badge badge-info">Получен</span>
+                                            {% endif %}
                                     </span>
-                                </h5>
-                                <p>
-                                    <span class="text-muted"> by {{ course.teacher.first_name }}</span>
-                                    <span class="text-muted"> {{ course.teacher.last_name }}</span>
-                                    <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>
-                                </p>
-                                <p class="card-text">{{ course.description }}</p>
-                                <p class="card-text"><small class="text-muted">{{ course.date_publish }}</small></p>
+                                    </h5>
+                                    <p>
+                                        <span class="text-muted">Создатель — {{ course.teacher.first_name }}</span>
+                                        <span class="text-muted"> {{ course.teacher.last_name }}</span>
+                                        {#                                    <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>#}
+                                    </p>
+                                    <p class="card-text">{{ course.description }}</p>
+                                    <p class="card-text"><small class="text-muted">{{ course.date_publish }}</small></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <img max-height="100px" class="card-img" src="{% thumbnail course.image 'default' %}">
+                            <div class="col-md-4">
+                                <img max-height="100px" class="card-img" src="{% thumbnail course.image 'default' %}">
+                            </div>
                         </div>
                     </div>
                 </div>

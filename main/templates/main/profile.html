@@ -1,6 +1,7 @@
 {% extends 'layout/basic.html' %}
 
 {% load thumbnail %}
+{% load my_tags %}
 
 {% block title %}
     Профиль пользователя
@@ -59,28 +60,11 @@
                     <a class="dropdown-item" href="{% url 'main:profile_change_url' %}">Изменить данные</a>
                     <a class="dropdown-item" href="{% url 'main:password_change_url' %}">Изменить пароль</a>
                     <a class="dropdown-item" href="{% url 'main:profile_delete_url' %}">Удалить аккаунт</a>
-                    <!-- <div class="dropdown-divider"></div> -->
                 </div>
             </div>
         </div>
     </div>
     <hr>
-{#    {% if user.teacher %}#}
-{#        <h3>Созданные курсы:</h3>#}
-{#        {% if user.teacher.teacher_boss.all  %}#}
-{#            {% include 'includes/course_cards.html' with courses=user.teacher.teacher_boss.all %}#}
-{#        {% else %}#}
-{#            <p style="color: red">Вы пока не создали ни одного курса</p>#}
-{#        {% endif %}#}
-{#        <hr>#}
-{#        <h3>Созданные задачи:</h3>#}
-{#        {% if tasks %}#}
-{#            {% include 'includes/task_crads.html' %}#}
-{#        {% else %}#}
-{#            <p style="color: red">Вы пока не создали ни одного задания</p>#}
-{#        {% endif %}#}
-{#        <hr>#}
-{#    {% endif %}#}
     <div>
         <h3>Отправленные решения:</h3>
         <table class="table table-sm table-bordered">
@@ -98,8 +82,8 @@
                 <tr>
                     <td><a class="body_a" href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
                     <td><a class="body_a" href="{% url 'testing_system:detail_course_url' pk=solution.task.course.pk %}">{{ solution.task.course }}</a></td>
-                    <td>{{ solution.file }}</td>
-                    <td>{{ solution.dispatch_time }}</td>
+                    <td>{{ solution.file|cut }}</td>
+                    <td>{{ solution.dispatch_time|time:"H:i:s" }}{{ solution.dispatch_time|date }}</td>
                     <td>{{ solution.status }}</td>
                 </tr>
             {% endfor %}
