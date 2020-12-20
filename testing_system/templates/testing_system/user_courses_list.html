@@ -2,16 +2,17 @@
 
 
 {% block title %}
-    User's courses
+    Курсы пользователя
 {% endblock %}
 
 {% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Курсы для пользователя</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
+        <a href="{% url 'testing_system:courses_list_url' %}">Все курсы</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         Курсы {{ user.username }}

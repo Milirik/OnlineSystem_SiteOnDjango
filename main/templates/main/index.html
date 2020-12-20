@@ -1,13 +1,36 @@
 {% extends 'layout/basic.html' %}
 
+{% load static %}
+
 {% block title %}
-    Main page
+    Главная страничка
 {% endblock %}
 
+{% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Главная</a></li>
+{% endblock %}
 
 {% block content %}
-    <h1>Главная</h1>
-    <div>Hello world</div>
-    <p>Добро пожаловать на наш сайт!</p>
+    <h1>Добро пожаловать на наш сайт!</h1>
+    <main class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 mt-4">
+                    <p>
+                        После регистрации на нашем сайте, у вас появится возможность выбрать себе курс из доступных.
+                    </p>
+                    <p>
+                        Для получения курса, если он открытый, достаточно лишь нажать на кнопку "Получить курс".
+                    </p>
+                    <p>
+                        Если он "Закрытый" это значит, что преподаватель решил ограничить доступ к курсу.
+                        Чтобы получить его нужно запросить доступ.
+                        После чего преподаватель может дать вам доступ.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <img src="{% static 'logo.png' %}">
+                </div>
+            </div>
+    </main>
 
 {% endblock %}

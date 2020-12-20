@@ -3,14 +3,11 @@
 {% load bootstrap4 %}
 
 {% block title %}
-    Create task
+    Создать задание
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Участники курсов</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
-
+    {% include 'includes/side_bar_course_control.html'%}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -32,7 +29,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         {% bootstrap_formset formset layout='horizontal' %}
-        {% buttons submit='Создать' %} {% endbuttons %}
+        <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Создать">
 
         {#        {% csrf_token %}#}
         {#        {% for hidden in form.hidden_fields %}#}

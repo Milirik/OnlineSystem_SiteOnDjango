@@ -4,6 +4,10 @@
 	Удаление пользователя
 {% endblock title %}
 
+{% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Удаление пользователя</a></li>
+{% endblock %}
+
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
@@ -18,6 +22,6 @@
 	<h2>Удалить аккаунт?</h2>
 	<form method="post">
 		{% csrf_token %}
-		<input type="submit" value="Удалить">
+		<input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Удалить">
 	</form>
 {% endblock content %}

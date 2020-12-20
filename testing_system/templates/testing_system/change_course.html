@@ -7,10 +7,7 @@
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Курсы</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_members_url' %}">Участники курсов</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+    {% include 'includes/side_bar_course_control.html'%}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -28,6 +25,6 @@
     <form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		{% bootstrap_form form layout='horizontal' %}
-		{% buttons submit='Сохранить изменения' %} {% endbuttons %}
+		<input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Сохранить изменения">
 	</form>
 {% endblock content %}

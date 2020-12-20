@@ -15,6 +15,13 @@ class StudentCodeModelForm(forms.ModelForm):
     class Meta:
         model = StudentCodeModel
         fields = '__all__'
+        widgets = {
+            'teacher': forms.HiddenInput,
+            'course': forms.HiddenInput,
+            'student': forms.HiddenInput,
+            'task': forms.HiddenInput,
+            'status': forms.HiddenInput
+        }
 
 
 class TaskForm(forms.ModelForm):
@@ -37,12 +44,12 @@ class CourseForm(forms.ModelForm):
 class TestForm(forms.ModelForm):
     input = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        help_text='Входные данные'
+        help_text='Входные данные',
     )
 
     output = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        help_text='Выходные данные'
+        help_text='Выходные данные',
     )
 
     class Meta:

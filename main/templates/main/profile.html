@@ -1,6 +1,7 @@
 {% extends 'layout/basic.html' %}
 
 {% load thumbnail %}
+{% load my_tags %}
 
 {% block title %}
     Профиль пользователя
@@ -8,12 +9,11 @@
 
 
 {% block sidebar %}
-    <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Отправленные задачи(не работает)</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:user_courses_list_url' %}">Мои курсы</a></li>
+{#    <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Отправленные задачи(не работает)</a></li>#}
+    <li class="nav-item"><a class="top_side_bar">Мой профиль</a></li>
+    <li class="nav-item"><a href="{% url 'testing_system:user_courses_list_url' %}">— Мои курсы</a></li>
     {% if user.teacher  %}
-{#        <li class="list-group-item"><a href="{% url 'testing_system:index_url' %}">Созданные задачи(не работает)</a></li>#}
-{#        <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_url' %}">Создать задачу</a></li>#}
-        <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Управление курсами</a></li>
+        <li class="nav-item"><a href="{% url 'testing_system:course_control_url' %}">— Управление курсами</a></li>
     {% endif %}
 {% endblock %}
 
@@ -29,16 +29,18 @@
 {% block content %}
     <h2>Профиль пользователя {{ user.username }}
     {% if user.teacher %}
-        <span style="color: red">Teacher</span>
+        <span style="color: #32e2b4">Teacher</span>
     {% endif %}
     </h2>
+    <hr>
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-2">
             {% if user.image %}
-                <img class="profile_photo" src="{% thumbnail user.image 'default' %}">
+{#                <img class="profile_photo" src="{% thumbnail user.image 'default' %}">#}
+                <img class="profile_photo" src="{{ user.image.url }}">
             {% endif %}
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <p>Имя профиля: {{ user.username }}</p>
             <p>Ваше имя:
                 {% if user.first_name and user.last_name %}
@@ -46,7 +48,6 @@
                 {% else %}
                     <b style="color:red;">Не указано</b>
                 {% endif %}
-
             </p>
             <p>Email: {{ user.email }}</p>
             <p>Дата регистрации: {{ user.date_joined }}</p>
@@ -59,34 +60,18 @@
                     <a class="dropdown-item" href="{% url 'main:profile_change_url' %}">Изменить данные</a>
                     <a class="dropdown-item" href="{% url 'main:password_change_url' %}">Изменить пароль</a>
                     <a class="dropdown-item" href="{% url 'main:profile_delete_url' %}">Удалить аккаунт</a>
-                    <!-- <div class="dropdown-divider"></div> -->
                 </div>
             </div>
         </div>
     </div>
     <hr>
-    {% if user.teacher %}
-        <h3>Созданные курсы:</h3>
-        {% if user.teacher.teacher_boss.all  %}
-            {% include 'includes/course_cards.html' with courses=user.teacher.teacher_boss.all %}
-        {% else %}
-            <p style="color: red">Вы пока не создали ни одного курса</p>
-        {% endif %}
-        <hr>
-        <h3>Созданные задачи:</h3>
-        {% if tasks %}
-            {% include 'includes/task_crads.html' %}
-        {% else %}
-            <p style="color: red">Вы пока не создали ни одного задания</p>
-        {% endif %}
-        <hr>
-    {% endif %}
     <div>
         <h3>Отправленные решения:</h3>
-        <table class="table">
+        <table class="table table-sm table-bordered">
             <thead>
             <tr>
                 <th scope="col">Задание</th>
+                <th scope="col">Курс</th>
                 <th scope="col">Название файла</th>
                 <th scope="col">Время отправки</th>
                 <th scope="col">Итог</th>
@@ -95,9 +80,10 @@
             <tbody id="counter">
             {% for solution in page_object.object_list %}
                 <tr>
-                    <td><a href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
-                    <td>{{ solution.file }}</td>
-                    <td>{{ solution.dispatch_time }}</td>
+                    <td><a class="body_a" href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
+                    <td><a class="body_a" href="{% url 'testing_system:detail_course_url' pk=solution.task.course.pk %}">{{ solution.task.course }}</a></td>
+                    <td>{{ solution.file|cut }}</td>
+                    <td>{{ solution.dispatch_time|time:"H:i:s"|cut_time }}{{ solution.dispatch_time|date }}</td>
                     <td>{{ solution.status }}</td>
                 </tr>
             {% endfor %}
@@ -105,14 +91,13 @@
             </tbody>
         </table>
         {% if is_paginated %}
-            <nav aria-label="Page navigation example" style="background-color: #F4F4EF">
+            <nav aria-label="Page navigation example" style="background-color: #f6f6f6">
                 <ul class="pagination">
-                    <li class="page-item {% if not prev_url %}disabled{% endif %} "><a class="page-link"
-                                                                                       href="{{ prev_url }}">Previous</a>
+                    <li class="page-item {% if not prev_url %}disabled{% endif %} ">
+                        <a class="page-link" href="{{ prev_url }}">Previous</a>
                     </li>
 
                     {% for n in page_object.paginator.page_range %}
-
                         {% if page_object.number == n %}
                             <li class="page-item disabled"><a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
                         {% elif n > page_object.number|add:-2 and n < page_object.number|add:2 %}

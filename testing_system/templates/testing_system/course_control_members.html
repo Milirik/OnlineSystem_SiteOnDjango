@@ -1,14 +1,11 @@
 {% extends 'layout/basic.html' %}
 
 {% block title %}
-    All courses
+    Участники курсов
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Курсы</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_members_url' %}">Участники курсов</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+    {% include 'includes/side_bar_course_control.html'%}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -23,7 +20,7 @@
 
 {% block content %}
 
-    <h1>Управление участников курсов</h1>
+    <h1>Участники курсов</h1>
     <hr>
 
     <form method="post">
@@ -34,13 +31,13 @@
             </h4>
             <hr>
             <h4>Студенты</h4>
-            <table class="table">
+            <table class="table table-sm table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">Никнейм</th>
                     <th scope="col">Имя</th>
                     <th scope="col">Статус</th>
-                    <th scope="col">Статистика</th>
+{#                    <th scope="col">Статистика</th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -59,7 +56,7 @@
                                 <p><b style="color: green">Допущен</b></p>
                             {% endif %}
                         </td>
-                        <td>@mdo</td>
+{#                        <td>@mdo</td>#}
                     </tr>
                 {% endfor %}
                 </tbody>

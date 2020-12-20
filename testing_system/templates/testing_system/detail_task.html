@@ -1,12 +1,24 @@
 {% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+{% load my_tags %}
+
 {% block title %}
-    Detail task № {{ task.pk }}
+    Описание задания № {{ task.pk }}
+{% endblock %}
+
+{% block sidebar %}
+     <li class="nav-item"><a class="top_side_bar"><q>{{ task.title }}</q></a></li>
+     <li class="nav-item"><a href="#title">— Текст задания</a></li>
+     <li class="nav-item"><a href="#restrictions">— Ограничения</a></li>
+     <li class="nav-item"><a href="#send">— Отправка решения</a></li>
+     <li class="nav-item"><a href="#sent">— Отправленные решения</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
     {{ block.super }}
      <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'testing_system:user_tasks_list_url' %}">Курсы</a>
+        <a href="{% url 'testing_system:user_tasks_list_url' %}">Все курсы</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
         <a href="{% url 'testing_system:detail_course_url' pk=task.course.pk%}">{{ task.course.title }}</a>
@@ -20,83 +32,106 @@
     <script>
         var answers = {{ answers|safe }};
     </script>
-
-    <h3>{{ task.title }}</h3>
-    <p>Создатель: {{ task.teacher.first_name }} {{ task.teacher.last_name }} <span style="color: #A01D26;"> @{{ task.teacher.username }} </span></p>
-    <p>Создано: <span class="text-muted">{{ task.date_publish }}</span></p>
+    <h3>
+        {{ task.title }}
+        <span class="text-muted h5">
+            by {{ task.teacher.first_name }} {{ task.teacher.last_name }}
+        </span>
+        <span class="h5">
+             @{{ task.teacher.username }}
+        </span>
+    </h3>
+    <p class="text-muted"><em>{{ task.date_publish }}</em></p>
     <hr>
-    <h3>Текст задания</h3>
-    <p>{{ task.task_text }}</p>
-    <hr>
-    <h3>Ограничения</h3>
-    <p>Максимальное допустимое время выполнения программы: <b>{{ task.time_limit }} милисекунд</b></p>
-    <p>Максимальная допустимая память для выполнения программы: <b>{{ task.memory_limit }} байт</b></p>
-    <hr>
-    {% if user.is_authenticated %}
-    <h3>Выберите форму отправки</h3>
-        <br>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center">
-                <div>
-                    <p>{{ form.code_text }}</p>
-                    <input type="submit" value="Отправить">
-                </div>
-
-                <div>
-                    <h4>OR</h4>
-                </div>
-                <div>
-                    <p>{{ form.file }}</p>
-                    <input type="submit" value="Отправить">
-                </div>
-
+    <div class="container-fluid">
+        <div class="row" id="title">
+            {% include 'includes/numbers.html' with num=1 %}
+            <div class="col-10">
+                <h5>Текст задания</h5>
+                <p>{{ task.task_text }}</p>
             </div>
-
-            <input type="hidden" name="task" value="{{ task.pk }}">
-            <input type="hidden" name="student" value="{{ user.pk }}">
-            <input type="hidden" name="status" value="В очереди">
-        </form>
-
-
-    {% else %}
-        <p>Чтобы отправить свое рещшение Вам нужно авторизоваться
-        <a href="{% url 'main:login_url' %}">Войти/зарегестрироваться</a>
-        </p>
-    {% endif %}
-
-    {% if user.is_authenticated %}
+        </div>
         <hr>
-        <h3>Отправленные ответы</h3>
-        {% if answers %}
+        <div class="row" id="restrictions">
+            {% include 'includes/numbers.html' with num=2 %}
+            <div class="col-11">
+                <h5>Ограничения</h5>
+                <p>Максимальное время выполнения: <b>{{ task.time_limit | number_cut }}</b></p>
+                <p>Максимальная память для программы: <b>{{ task.memory_limit | number_cut2 }}</b></p>
+            </div>
+        </div>
+        <hr>
+        <div class="row" id="send">
+            {% include 'includes/numbers.html' with num=3 %}
+            <div class="col-10">
+                {% if user.is_authenticated %}
+                    <h5>Отправка решения</h5>
+                    <br>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Название файла</th>
-                    <th scope="col">Время отправки</th>
-                    <th scope="col">Итог</th>
-                </tr>
-                </thead>
-                <tbody id="counter">
-                     <template v-for="(answer, index) in answers">
-                         <tr>
-                            <th scope="row">[[ index+1 ]]</th>
-                            <td>[[ answer.file ]]</td>
-                            <td>[[ answer.dispatch_time ]]</td>
-                            <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
+                        {% bootstrap_field form.code_text %}
+                        <input class="btn btn-primary btn btn-block"
+                               style="background-color: #32e2b4; color: black; border: #32e2b4"
+                               type="submit" value="Отправить">
+                        {% bootstrap_field form.file %}
+                        <input class="btn btn-outline-primary mb-4"
+                               style="background-color: #32e2b4; color: black; border: #32e2b4"
+                               type="submit" value="Отправить">
+
+                        <input type="hidden" name="task" value="{{ task.pk }}">
+                        <input type="hidden" name="student" value="{{ user.pk }}">
+                        <input type="hidden" name="status" value="В очереди">
+                    </form>
+
+                {% else %}
+                    <p>Чтобы отправить свое рещшение Вам нужно авторизоваться
+                        <a href="{% url 'main:login_url' %}">Войти/зарегестрироваться</a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row" id="sent">
+            {% include 'includes/numbers.html' with num=4 %}
+            <div class="col-10">
+                {% if user.is_authenticated %}
+                    <h5>Отправленные решения</h5>
+                    {% if answers %}
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Название файла</th>
+                                <th scope="col">Время отправки</th>
+                                <th scope="col">Итог</th>
+                            </tr>
+                            </thead>
+                            <tbody id="counter">
+                            <template v-for="(answer, index) in answers">
+                                <tr>
+                                    <th scope="row">[[ index+1 ]]</th>
+                                    <td>[[ answer.file | cut ]]</td>
+                                    <td>[[ answer.dispatch_time | date_cut ]]</td>
+                                    <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
                             error: answer.status=='All tests passed' ? false : true,
-                             }">[[ answer.status ]]</td>
-                         </tr>
-                     </template>
-                </tbody>
-            </table>
+                             }">[[ answer.status ]]
+                                    </td>
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
 
-            {% else %}
-            <p>Пока нет отправленных ответов</p>
-        {% endif %}
-    {% endif %}
+                    {% else %}
+                        <p>Пока нет отправленных ответов</p>
+                    {% endif %}
+                {% endif %}
+                <footer style="height: 130px"></footer>
+            </div>
+        </div>
+    </div>
+
+
 
 {% endblock %}

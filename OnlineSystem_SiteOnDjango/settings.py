@@ -31,7 +31,7 @@ RABBIT_URL = "http://localhost:15672"
 THUMBNAIL_ALIASES = {
     'main.Student.image': {
         'default': {
-            'size': (260, 200),
+            'size': (300, 300),
             'crop': 'smart',
         },
         'mini': {
@@ -44,6 +44,10 @@ THUMBNAIL_ALIASES = {
             'size': (0, 300),
             'crop': 'scale',
         },
+        'mini': {
+            'size': (300, 100),
+            'crop': 'smart',
+        }
     }
 }
 
@@ -58,7 +62,7 @@ INSTALLED_APPS = (
     'testing_system',
     'bootstrap4',
     'django_cleanup',
-    'easy_thumbnails'
+    'easy_thumbnails',
 )
 
 MIDDLEWARE = [
@@ -88,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
 
                 'django.contrib.messages.context_processors.messages',
+
                 'testing_system.middlewares.testing_system_context_processor',
             ],
         },

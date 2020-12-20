@@ -1,26 +1,22 @@
 {% extends 'layout/basic.html' %}
 
 {% block title %}
-    All courses
+    Задания курсов
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a href="{% url 'main:index_url' %}">Сортировка(не работает)</a></li>
+    <li class="nav-item"><a class="top_side_bar">Мои задания</a></li>
 {% endblock %}
 
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
-       Доступные задания
+        Мои задания
     </li>
 {% endblock %}
 
-
 {% block content %}
-    <h1>Здесь отображаются все доступные <a href="{% url 'main:profile_url' %}">{{ user.username }}</a> задания</h1>
+    <h1>Мои задания</h1>
     <hr>
     {% include 'includes/task_crads.html'%}
-
-
-
 {% endblock %}

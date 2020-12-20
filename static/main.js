@@ -24,6 +24,18 @@ var app = new Vue({
         },
         methods: {
         },
+        filters:{
+            cut: function (value){
+                if(!value) return ''
+                value = value.toString()
+                return value.split('/').pop()
+            },
+
+            date_cut: function (value){
+                value = value.split('.')[0].split(' ')
+                return value[1] + " " + value[0]
+            }
+        }
 
     }
 );

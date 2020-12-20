@@ -46,6 +46,18 @@ class UserCoursesView(LoginRequiredMixin, ListView):
                                      Q(is_shown=True))
 
 
+def search_course_list(request):
+    """ Выводит найденные курсы """
+
+    search_word = request.GET.get("sf")
+    print(search_word)
+    courses = Course.objects.filter(title__icontains=search_word)
+    context = {
+        'courses': courses,
+    }
+    return render(request, 'testing_system/search_course.html', context=context)
+
+
 class CourseControlView(LoginRequiredMixin, ListView):
     """Контроль курсов. Выводит все курсы и их описание"""
     template_name = 'testing_system/course_control.html'
@@ -226,6 +238,8 @@ def create_task(request, pk):
             if formset.is_valid():
                 formset.save()
                 return redirect('testing_system:course_control_tasks_url')
+        else:
+            return redirect('testing_system:index_url')
     else:
         form = TaskForm(
             initial={
@@ -252,7 +266,7 @@ def change_task(request, pk, pk_task):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save()
-            formset = TestFormSet(request.POST, request.FILES, instance=task)
+            formset = TestFormSet(request.POST, instance=task)
             if formset.is_valid():
                 formset.save()
                 return redirect('testing_system:course_control_tasks_url')

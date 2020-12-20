@@ -6,6 +6,10 @@
 	Правка данных
 {% endblock title %}
 
+{% block sidebar %}
+    <li class="nav-item"><a class="top_side_bar">Изменение информации пользователя</a></li>
+{% endblock %}
+
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
@@ -22,6 +26,6 @@
 	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
-        {% buttons submit='Сохранить' %} {% endbuttons %}
+        <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Сохранить">
 	</form>
 {% endblock content %}

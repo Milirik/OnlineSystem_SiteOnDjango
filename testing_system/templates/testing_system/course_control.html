@@ -3,14 +3,11 @@
 {% load thumbnail %}
 
 {% block title %}
-    All courses
+    Контроль курсов
 {% endblock %}
 
 {% block sidebar %}
-    <li class="list-group-item"><a class="btn btn-outline-dark" href="{% url 'testing_system:create_course_url' %}">Создать курс</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_url' %}">Курсы</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_members_url' %}">Участники курсов</a></li>
-    <li class="list-group-item"><a href="{% url 'testing_system:course_control_tasks_url' %}">Задачи курсов</a></li>
+    {% include 'includes/side_bar_course_control.html'%}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -25,37 +22,55 @@
 
 {% block content %}
 
-    <h1>Управление курсами</h1>
+    <h1>Созданные курсы</h1>
     <hr>
 
     <form method="post">
-        {% csrf_token %}
-        {% for course in courses %}
-            {% if course.image %}
-                <img class="profile_photo" src="{% thumbnail course.image 'default' %}">
-            {% endif %}
-            <h4>
-                Курс <a href="{% url 'testing_system:detail_course_url' pk=course.pk%}"><q>{{ course.title }}</q></a>
-                {% if course.is_shown  %}
-                    <span class="badge badge-success">Курс отображается для всех</span>
-                {% else %}
-                    <span class="badge badge-danger">Курс не отображается </span>
-                {% endif %}
-                <a href="{% url 'testing_system:change_course_url' pk=course.pk%}" class="btn btn-outline-dark">Редактировать курс</a>
-            </h4>
-            <p>
-                {% if course.availability == "true" %}
-                    <span class="badge badge-success">Доступен для всех</span>
-                {% else %}
-                    <span class="badge badge-danger">Закрытый</span>
-                {% endif %}
-                <span><small><em>{{ course.date_publish }}</em></small></span>
-            </p>
-            <p>
-                {{ course.description }}
-            </p>
-            <hr>
-        {% endfor %}
+        <div class="container-fluid">
+            <div class="row">
+                {% for course in courses %}
+                    <div class="col-md-12">
+                        <div class="row no-gutters mt-2" style="border: 1px solid black">
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ course.get_absolute_url }}">
+                                            <q>{{ course.title }}</q>
+                                        </a>
+                                        <a href="{% url 'testing_system:change_course_url' pk=course.pk%}" class="btn btn-sm btn-outline-dark">Редактировать курс</a>
+                                        <span class="h6">
+                                        {% if course.availability == "true" %}
+                                            <span class="badge badge-info">Доступен для всех</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Закрытый</span>
+                                        {% endif %}
+                                            {% if course.is_shown %}
+                                                <span class="badge badge-success">Курс отображается для всех</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Курс не отображается </span>
+                                            {% endif %}
+                                    </span>
+                                    </h5>
+                                    <p>
+                                        <span class="text-muted">Создатель — {{ course.teacher.first_name }}</span>
+                                        <span class="text-muted"> {{ course.teacher.last_name }}</span>
+                                        {#                                    <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>#}
+                                    </p>
+                                    <p class="card-text">{{ course.description }}</p>
+                                    <p class="card-text"><small
+                                            class="text-muted">{{ course.date_publish }}</small></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img height="200px" class="card-img"
+                                     src="{% thumbnail course.image 'mini' %}">
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </form>
 
 {% endblock %}
