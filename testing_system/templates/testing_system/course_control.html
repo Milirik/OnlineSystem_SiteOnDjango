@@ -22,37 +22,10 @@
 
 {% block content %}
 
-    <h1>Управление курсами</h1>
+    <h1>Созданные курсы</h1>
     <hr>
 
     <form method="post">
-{#        {% csrf_token %}#}
-{#        {% for course in courses %}#}
-{#            {% if course.image %}#}
-{#                <img class="profile_photo" src="{% thumbnail course.image 'default' %}">#}
-{#            {% endif %}#}
-{#            <h4>#}
-{#                Курс <a href="{% url 'testing_system:detail_course_url' pk=course.pk%}"><q>{{ course.title }}</q></a>#}
-{#                {% if course.is_shown  %}#}
-{#                    <span class="badge badge-success">Курс отображается для всех</span>#}
-{#                {% else %}#}
-{#                    <span class="badge badge-danger">Курс не отображается </span>#}
-{#                {% endif %}#}
-{#                <a href="{% url 'testing_system:change_course_url' pk=course.pk%}" class="btn btn-outline-dark">Редактировать курс</a>#}
-{#            </h4>#}
-{#            <p>#}
-{#                {% if course.availability == "true" %}#}
-{#                    <span class="badge badge-success">Доступен для всех</span>#}
-{#                {% else %}#}
-{#                    <span class="badge badge-danger">Закрытый</span>#}
-{#                {% endif %}#}
-{#                <span><small><em>{{ course.date_publish }}</em></small></span>#}
-{#            </p>#}
-{#            <p>#}
-{#                {{ course.description }}#}
-{#            </p>#}
-{#            <hr>#}
-{#        {% endfor %}#}
         <div class="container-fluid">
             <div class="row">
                 {% for course in courses %}
@@ -89,7 +62,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <img height="200px" wclass="card-img"
+                                <img height="200px" class="card-img"
                                      src="{% thumbnail course.image 'mini' %}">
                             </div>
                         </div>

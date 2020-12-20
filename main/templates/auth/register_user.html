@@ -21,7 +21,9 @@
      <h1>Регистрация</h1>
      <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form layout='horizontal' %}
+         <div class="col-md-6">
+             {% bootstrap_form form layout='horizontal' %}
+         </div>
         <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Зарегестрироваться">
     </form>
 {% endblock %}

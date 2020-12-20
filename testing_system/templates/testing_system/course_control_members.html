@@ -20,7 +20,7 @@
 
 {% block content %}
 
-    <h1>Управление участников курсов</h1>
+    <h1>Участники курсов</h1>
     <hr>
 
     <form method="post">
@@ -31,13 +31,13 @@
             </h4>
             <hr>
             <h4>Студенты</h4>
-            <table class="table">
+            <table class="table table-sm table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">Никнейм</th>
                     <th scope="col">Имя</th>
                     <th scope="col">Статус</th>
-                    <th scope="col">Статистика</th>
+{#                    <th scope="col">Статистика</th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -56,7 +56,7 @@
                                 <p><b style="color: green">Допущен</b></p>
                             {% endif %}
                         </td>
-                        <td>@mdo</td>
+{#                        <td>@mdo</td>#}
                     </tr>
                 {% endfor %}
                 </tbody>

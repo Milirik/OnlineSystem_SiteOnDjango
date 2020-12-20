@@ -1,29 +1,13 @@
 {% extends 'layout/basic.html' %}
+
+{% load thumbnail %}
+
 {% block title %}
     Описание курса № {{ course.pk }}
 {% endblock %}
 
 {% block sidebar %}
     <li class="nav-item"><a class="top_side_bar"><q>{{ course.title }}</q></a></li>
-    <form method="post">
-    {% csrf_token %}
-    {% if not access_model and user.is_active %}
-        <li class="nav-item">
-            <button class="btn btn-outline-dark">Получить курс</button>
-        </li>
-    {% elif not user.is_active %}
-        <li class="list-group-item">
-           Авторизуйтесь или зарегестрируйтесь, чтобы получить курс
-        </li>
-    {% else %}
-        {% if not access_model.access %}
-            <li class="list-group-item">
-                <b style="color: #A01D26">Запрос на получение курса отправлен</b>
-            </li>
-        {% endif %}
-    {% endif %}
-     </form>
-
     <li class="nav-item"><a href="#description">— Описание</a></li>
     <li class="nav-item"><a href="#tasks">— Задания</a></li>
 
@@ -32,7 +16,7 @@
 {% block breadcrumb %}
     {{ block.super }}
      <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'testing_system:courses_list_url' %}">Курсы</a>
+        <a href="{% url 'testing_system:courses_list_url' %}"> Все курсы</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {{ course.title }}
@@ -41,32 +25,58 @@
 
 
 {% block content %}
-    <h3>
-        Курс <q>{{ course.title }}</q>
-        {% if course.availability == "true" %}
-            <span class="badge badge-success">Доступен для всех</span>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <h3>
+                    Курс <q>{{ course.title }}</q>
+                    {% if access_model.access %}
+                        <span class="badge badge-info">Получен</span>
+                    {% endif %}
+                    {% if course.availability == "true" %}
+                        <span class="badge badge-success">Доступен для всех</span>
+                    {% else %}
+                        <span class="badge badge-danger">Закрытый</span>
+                    {% endif %}
+                    <form method="post" style="display: inline-block">
+                        {% csrf_token %}
+                        {% if not access_model and user.is_active %}
+
+                                <button class="btn btn-outline-dark">Получить курс</button>
+
+                        {% elif not user.is_active %}
+                           Авторизуйтесь или зарегестрируйтесь, чтобы получить курс
+                        {% else %}
+                            {% if not access_model.access %}
+                                <em class="h5">Запрос на получение курса отправлен</em>
+                            {% endif %}
+                        {% endif %}
+                    </form>
+
+
+                </h3>
+                <p>Создатель: {{ course.teacher.first_name }} {{ course.teacher.last_name }} <span
+                        style="color: #A01D26;"> @{{ course.teacher.username }} </span>
+                </p>
+                <p>Создано: <span class="text-muted">{{ course.date_publish }}</span></p>
+                <hr>
+                <h3 id="descriptions">Описание</h3>
+                <p>{{ course.description }}</p>
+                <hr>
+            </div>
+            <div class="col-md-3">
+                <img max-height="100px" class="card-img" src="{% thumbnail course.image 'default' %}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <h3 id="tasks">Задания</h3>
+        {% if not access_model or not access_model.access %}
+            <b style="color: red">Нет доступа</b>
+
         {% else %}
-            <span class="badge badge-danger">Закрытый</span>
+            {% include 'includes/task_crads.html' with tasks=course.task_set.all %}
         {% endif %}
-        {% if access_model.access %}
-            <span class="badge badge-info">Получен</span>
-        {% endif %}
-    </h3>
-
-
-
-    <p>Создатель: {{ course.teacher.first_name }} {{ course.teacher.last_name }} <span style="color: #A01D26;"> @{{ course.teacher.username }} </span></p>
-    <p>Создано: <span class="text-muted">{{ course.date_publish }}</span></p>
-    <hr>
-    <h3 id="descriptions">Описание</h3>
-    <p>{{ course.description }}</p>
-    <hr>
-    <h3 id="tasks">Задания</h3>
-    {% if not access_model or not access_model.access %}
-        <b style="color: red">Нет доступа</b>
-    {% else %}
-        {% include 'includes/task_crads.html' with tasks=course.task_set.all %}
-    {% endif %}
-
+    </div>
 
 {% endblock %}

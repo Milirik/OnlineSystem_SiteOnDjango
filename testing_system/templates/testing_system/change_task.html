@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 
 {% block title %}
-    Create task
+    Изменить задание
 {% endblock %}
 
 {% block sidebar %}
@@ -31,7 +31,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         {% bootstrap_formset formset layout='horizontal' %}
-        {% buttons submit='Сохранить изменения' %} {% endbuttons %}
+        <input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Сохранить">
 {#        {% csrf_token %}#}
 {#        {% for hidden in form.hidden_fields %}#}
 {#            {{ hidden }}#}

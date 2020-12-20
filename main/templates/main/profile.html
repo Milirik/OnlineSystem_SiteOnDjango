@@ -83,7 +83,7 @@
                     <td><a class="body_a" href="{{ solution.task.get_absolute_url }}">{{ solution.task }}</a></td>
                     <td><a class="body_a" href="{% url 'testing_system:detail_course_url' pk=solution.task.course.pk %}">{{ solution.task.course }}</a></td>
                     <td>{{ solution.file|cut }}</td>
-                    <td>{{ solution.dispatch_time|time:"H:i:s" }}{{ solution.dispatch_time|date }}</td>
+                    <td>{{ solution.dispatch_time|time:"H:i:s"|cut_time }}{{ solution.dispatch_time|date }}</td>
                     <td>{{ solution.status }}</td>
                 </tr>
             {% endfor %}

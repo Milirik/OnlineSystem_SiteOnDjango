@@ -1,6 +1,5 @@
 {% extends 'layout/basic.html' %}
 
-
 {% block title %}
     Все курсы
 {% endblock %}
@@ -15,14 +14,19 @@
 {% block breadcrumb %}
     {{ block.super }}
     <li class="breadcrumb-item active" aria-current="page">
-        Все курсы
+        Найденные курсы
     </li>
 {% endblock %}
 
 {% block content %}
-    <h1>Все курсы</h1>
+    <h1>Найденные курсы</h1>
     <hr>
+    {% if courses %}
+        {% include 'includes/course_cards.html'%}
+    {% else %}
+        <p><b>Курсов не найдено</b></p>
+    {% endif %}
 
-    {% include 'includes/course_cards.html'%}
+
 
 {% endblock %}

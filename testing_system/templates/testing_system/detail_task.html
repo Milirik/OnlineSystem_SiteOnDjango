@@ -18,7 +18,7 @@
 {% block breadcrumb %}
     {{ block.super }}
      <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'testing_system:user_tasks_list_url' %}">Курсы</a>
+        <a href="{% url 'testing_system:user_tasks_list_url' %}">Все курсы</a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
         <a href="{% url 'testing_system:detail_course_url' pk=task.course.pk%}">{{ task.course.title }}</a>
@@ -113,7 +113,7 @@
                                 <tr>
                                     <th scope="row">[[ index+1 ]]</th>
                                     <td>[[ answer.file | cut ]]</td>
-                                    <td>[[ answer.dispatch_time ]]</td>
+                                    <td>[[ answer.dispatch_time | date_cut ]]</td>
                                     <td v-bind:class="{ success: answer.status=='All tests passed' ? true : false,
                             error: answer.status=='All tests passed' ? false : true,
                              }">[[ answer.status ]]
@@ -127,6 +127,7 @@
                         <p>Пока нет отправленных ответов</p>
                     {% endif %}
                 {% endif %}
+                <footer style="height: 130px"></footer>
             </div>
         </div>
     </div>

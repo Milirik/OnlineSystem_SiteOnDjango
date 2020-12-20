@@ -34,16 +34,25 @@
                         <span style="color: #32e2b4" class="nav-link">&bull;</span>
                     </li>
                     <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'testing_system:user_courses_list_url' %}">Мои курсы</a>
+                    </li>
+                    <li class="nav-item active">
+                        <span style="color: #32e2b4" class="nav-link">&bull;</span>
+                    </li>
+                    <li class="nav-item active">
                         <a class="nav-link" href="{% url 'testing_system:user_tasks_list_url' %}">Мои задания</a>
                     </li>
                 {% endif %}
                 <li class="nav-item active">
-                    <form class="form-inline ml-5">
+                    <form class="form-inline ml-5" method="get" action="{% url 'testing_system:search_course_list_url' %}">
+                        {% csrf_token %}
                         <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
                         <div class="input-group mb-2 mr-sm-2">
                             <input style="border: 2px solid #32e2b4;background: #e4e4e4" type="text"
                                    class="form-control"
-                                   id="inlineFormInputGroupUsername2" placeholder="Название курса">
+                                   id="inlineFormInputGroupUsername2"
+                                   placeholder="Название курса"
+                                   name="sf">
                             <div class="input-group-prepend">
                                 <button style="background-color: #32e2b4;  border: 2px solid #32e2b4;" type="button"
                                         class="btn btn-primary btn-sm"><img height="15px" src="{% static 'lupa.png' %}">

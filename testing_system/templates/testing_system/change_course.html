@@ -25,6 +25,6 @@
     <form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		{% bootstrap_form form layout='horizontal' %}
-		{% buttons submit='Сохранить изменения' %} {% endbuttons %}
+		<input class="btn btn-outline-primary mb-4" style="background-color: #32e2b4; color: black; border: #32e2b4" type="submit" value="Сохранить изменения">
 	</form>
 {% endblock content %}

@@ -16,14 +16,15 @@
                                             <q>{{ course.title }}</q>
                                         </span>
                                         <span class="h6">
+                                         {% if course in user_courses %}
+                                             <span class="badge badge-info">Получен</span>
+                                         {% endif %}
                                         {% if course.availability == "true" %}
                                             <span class="badge badge-success">Доступен для всех</span>
                                         {% else %}
                                             <span class="badge badge-danger">Закрытый</span>
                                         {% endif %}
-                                            {% if course in user_courses %}
-                                                <span class="badge badge-info">Получен</span>
-                                            {% endif %}
+
                                     </span>
                                     </h5>
                                     <p>
@@ -31,7 +32,7 @@
                                         <span class="text-muted"> {{ course.teacher.last_name }}</span>
                                         {#                                    <span style="color: #A01D26;"> @{{ course.teacher.username }}</span>#}
                                     </p>
-                                    <p class="card-text">{{ course.description }}</p>
+                                    <p class="card-text">{{ course.description|truncatewords:10 }}</p>
                                     <p class="card-text"><small class="text-muted">{{ course.date_publish }}</small></p>
                                 </div>
                             </div>

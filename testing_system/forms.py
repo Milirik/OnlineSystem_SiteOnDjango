@@ -44,12 +44,12 @@ class CourseForm(forms.ModelForm):
 class TestForm(forms.ModelForm):
     input = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        help_text='Входные данные'
+        help_text='Входные данные',
     )
 
     output = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        help_text='Выходные данные'
+        help_text='Выходные данные',
     )
 
     class Meta:

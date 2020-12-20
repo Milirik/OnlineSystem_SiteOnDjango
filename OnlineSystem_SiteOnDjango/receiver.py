@@ -12,7 +12,7 @@ class AMQPConsuming(threading.Thread):
         # Проверка на пустое сообщение
         if body:
             ans = body.decode('utf-8')
-            ans_s = json.loads(ans)
+            ans_s = json.loads(ans, strict=False)
             st_ans = StudentCodeModel.objects.filter(pk=ans_s["answer_id"]).first()
             if st_ans:
                 st_ans.status = ans_s["status"]
